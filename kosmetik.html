@@ -1,0 +1,1761 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kosmetik- & Nagelstudio-App | Nexovest</title>
+<meta name="description" content="Individuelle Apps für Restaurants, Friseure, Fitnessstudios & Kosmetikstudios. Maßgeschneidert, provisionsfrei, persönlich aus Hannover — Zahlung nur bei 100 % Zufriedenheit.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          // Nexovest brand tokens (extracted from nexovest-consulting.de)
+          nx: {
+            bg:'#05070e', bg2:'#0a0e1c', surf:'#0f1526', surf2:'#141c33', line:'#1d2742',
+            blue:'#3f6dff', blue2:'#6c8dff', aqua:'#28d7ee', aqua2:'#6ee9f6', coral:'#ff6568',
+            fg:'#eef2fb', mut:'#8a96b3', mut2:'#c3cde0',
+          },
+          brand:  { DEFAULT: '#3f6dff', 50:'#11203f', 100:'#16294f', 500:'#6c8dff', 600:'#3f6dff', 700:'#2f5ae0' },
+          ink:    '#eef2fb',
+        },
+        fontFamily: {
+          sans:    ['Inter','system-ui','sans-serif'],
+          display: ['Sora','Inter','system-ui','sans-serif'],
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+/* ============================================================
+   NEXOVEST SITE CHROME (dark-tech: navy + #3f6dff + #28d7ee aqua)
+   ============================================================ */
+:root{color-scheme:dark;}
+html,body{background:#05070e;}
+.nx-glow{position:absolute;border-radius:50%;filter:blur(85px);pointer-events:none;z-index:0;}
+.nx-grid{background-image:linear-gradient(rgba(63,109,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(63,109,255,.06) 1px,transparent 1px);background-size:46px 46px;}
+.nx-btn{background:linear-gradient(135deg,#3f6dff,#28d7ee);color:#04111e;box-shadow:0 12px 34px -10px rgba(40,215,238,.45);}
+.nx-btn:hover{box-shadow:0 14px 40px -8px rgba(40,215,238,.6);}
+.nx-card{background:#0f1526;border:1px solid #1d2742;}
+.nx-card-hover{transition:border-color .25s,transform .25s,box-shadow .25s;}
+.nx-card-hover:hover{border-color:rgba(40,215,238,.45);box-shadow:0 0 0 1px rgba(40,215,238,.15),0 24px 50px -24px rgba(40,215,238,.25);transform:translateY(-2px);}
+.text-grad{background:linear-gradient(110deg,#6c8dff 10%,#28d7ee 90%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.nx-ring{box-shadow:0 0 0 1px rgba(40,215,238,.18) inset;}
+.nx-chip{background:rgba(40,215,238,.1);border:1px solid rgba(40,215,238,.22);color:#6ee9f6;}
+
+/* ============================================================
+   PHONE-MOCKUP-SYSTEM  (premium, themebar via CSS-Variablen)
+   ============================================================ */
+.stage { position: relative; display: flex; flex-direction: column; align-items: center; }
+.stage .halo { position:absolute; inset:-12% -6%; border-radius:50%; filter:blur(60px); opacity:.5;
+  background: radial-gradient(circle at 50% 40%, var(--p), transparent 62%); z-index:0; }
+
+.phone-shell { position: relative; z-index:1; animation: floaty 7s ease-in-out infinite; }
+@keyframes floaty { 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-12px) } }
+
+.device {
+  position: relative; width: 294px; height: 616px; border-radius: 52px; padding: 11px;
+  background: linear-gradient(150deg,#3a3a40 0%,#15151a 32%,#26262c 60%,#0c0c10 100%);
+  box-shadow:
+    0 2px 3px rgba(255,255,255,.10) inset,
+    0 -2px 4px rgba(0,0,0,.6) inset,
+    0 40px 80px -30px rgba(15,16,32,.55),
+    0 8px 24px -12px rgba(15,16,32,.4),
+    0 0 0 1px rgba(255,255,255,.05);
+}
+.device::after { /* Glas-Reflexion */
+  content:""; position:absolute; inset:11px; border-radius:42px; pointer-events:none; z-index:40;
+  background: linear-gradient(120deg, rgba(255,255,255,.16) 0%, rgba(255,255,255,0) 24%, rgba(255,255,255,0) 70%, rgba(255,255,255,.05) 100%);
+}
+.island { position:absolute; top:21px; left:50%; transform:translateX(-50%); width:88px; height:25px;
+  background:#000; border-radius:14px; z-index:45; box-shadow: 0 0 0 1px rgba(255,255,255,.04) inset; }
+.screen { position:relative; width:100%; height:100%; border-radius:42px; overflow:hidden;
+  background: var(--bg); }
+
+/* Szenen */
+.scene { position:absolute; inset:0; display:flex; flex-direction:column;
+  font-family:'Inter',sans-serif; color:var(--fg);
+  opacity:0; transform: translateY(10px) scale(.985); pointer-events:none;
+  transition: opacity .55s cubic-bezier(.4,0,.2,1), transform .55s cubic-bezier(.4,0,.2,1); }
+.scene.active { opacity:1; transform:none; pointer-events:auto; }
+
+/* Tap-Cursor — verkauft das "jemand bedient die App"-Gefühl */
+.tapper { position:absolute; width:34px; height:34px; left:0; top:0; z-index:60; pointer-events:none;
+  margin:-17px 0 0 -17px; opacity:0;
+  transition: left .5s cubic-bezier(.5,0,.3,1), top .5s cubic-bezier(.5,0,.3,1), opacity .3s; }
+.tapper i { position:absolute; inset:0; border-radius:50%;
+  background: radial-gradient(circle at 50% 42%, rgba(255,255,255,.95), rgba(255,255,255,.35) 60%, transparent 72%);
+  box-shadow: 0 4px 12px rgba(0,0,0,.28), 0 0 0 1px rgba(0,0,0,.05); }
+.tapper.show { opacity:1; }
+.tapper.tap i { animation: tapPress .42s ease; }
+.tapper.tap::after { content:""; position:absolute; inset:0; border-radius:50%;
+  border:2px solid rgba(255,255,255,.9); animation: tapRing .55s ease-out; }
+@keyframes tapPress { 0%{ transform:scale(1) } 40%{ transform:scale(.8) } 100%{ transform:scale(1) } }
+@keyframes tapRing  { 0%{ transform:scale(.5); opacity:.9 } 100%{ transform:scale(2.1); opacity:0 } }
+
+/* Statusbar */
+.sbar { height:44px; flex:none; display:flex; align-items:flex-end; justify-content:space-between;
+  padding:0 22px 7px; font-size:13px; font-weight:700; }
+.sbar .dots { display:flex; gap:3px; align-items:center; }
+.sbar .dots b { width:4px; height:4px; border-radius:50%; background:currentColor; display:block; }
+.sbar .bat { width:22px; height:11px; border:1.4px solid currentColor; border-radius:3px; position:relative; opacity:.9; }
+.sbar .bat::before { content:""; position:absolute; inset:1.5px; left:1.5px; width:13px; background:currentColor; border-radius:1px; }
+.sbar .bat::after { content:""; position:absolute; right:-3px; top:3px; width:2px; height:5px; background:currentColor; border-radius:0 2px 2px 0; }
+
+/* App-Bausteine (themed via Variablen) */
+.app { flex:1; display:flex; flex-direction:column; min-height:0; }
+.hdr { flex:none; padding:2px 18px 16px; }
+.hdr.bold { background: linear-gradient(155deg, var(--p), color-mix(in srgb, var(--p) 78%, #000)); color:#fff; }
+.brandrow { display:flex; align-items:center; gap:11px; }
+.mono { width:42px; height:42px; border-radius:13px; flex:none; display:flex; align-items:center; justify-content:center;
+  font-family:'Sora',sans-serif; font-weight:800; font-size:17px; box-shadow:0 6px 14px rgba(0,0,0,.18); }
+.brandtxt b { font-family:'Sora',sans-serif; font-weight:800; font-size:18px; letter-spacing:-.01em; display:block; line-height:1.1; }
+.brandtxt span { font-size:11.5px; opacity:.82; font-weight:500; }
+.bell { margin-left:auto; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+.chips { display:flex; gap:7px; margin-top:13px; }
+.chip { display:flex; align-items:center; gap:4px; font-size:11px; font-weight:600; padding:5px 10px; border-radius:999px; }
+.search { display:flex; align-items:center; gap:9px; margin:13px 18px -22px; padding:12px 14px; border-radius:15px;
+  background:var(--surface); color:var(--muted); font-size:12.5px; font-weight:500; position:relative; z-index:5;
+  box-shadow:0 10px 24px -12px rgba(0,0,0,.3); }
+
+.body { flex:1; overflow:hidden; padding:8px 18px 8px; }
+.sect { font-family:'Sora',sans-serif; font-weight:700; font-size:14px; margin:14px 2px 9px; color:var(--fg); }
+.body .sect:first-child { margin-top:14px; }
+
+.hero-card { position:relative; height:150px; border-radius:20px; overflow:hidden; box-shadow:0 16px 30px -16px rgba(0,0,0,.45); }
+.hero-card img, .tile img { width:100%; height:100%; object-fit:cover; display:block; }
+.hero-grad { position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,.82) 4%, rgba(0,0,0,.12) 52%, transparent); }
+.hero-tag { position:absolute; top:11px; left:11px; font-size:10.5px; font-weight:700; padding:5px 9px; border-radius:999px;
+  background:var(--a); color:var(--on-a); display:flex; align-items:center; gap:4px; }
+.hero-foot { position:absolute; left:13px; right:13px; bottom:12px; color:#fff; }
+.hero-name { font-family:'Sora',sans-serif; font-weight:800; font-size:18px; text-shadow:0 2px 8px rgba(0,0,0,.4); }
+.hero-row { display:flex; align-items:center; justify-content:space-between; margin-top:5px; }
+.hero-price { font-family:'Sora',sans-serif; font-weight:800; font-size:16px; }
+.fab { width:34px; height:34px; border-radius:50%; background:var(--a); color:var(--on-a); display:flex; align-items:center; justify-content:center;
+  box-shadow:0 6px 14px color-mix(in srgb, var(--a) 50%, transparent); }
+
+.cats { display:flex; gap:8px; }
+.cat { font-size:12px; font-weight:600; padding:7px 13px; border-radius:999px; white-space:nowrap;
+  background:var(--surface); color:var(--muted); border:1px solid var(--border); }
+.cat.on { background:var(--a); color:var(--on-a); border-color:var(--a); }
+
+.row { display:flex; align-items:center; gap:11px; padding:9px; border-radius:15px; background:var(--surface);
+  border:1px solid var(--border); margin-bottom:9px; box-shadow:0 4px 14px -10px rgba(0,0,0,.25); }
+.row .tile { width:54px; height:54px; border-radius:12px; overflow:hidden; flex:none; }
+.row .info { flex:1; min-width:0; }
+.row .nm { font-weight:700; font-size:13.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.row .ds { font-size:11px; color:var(--muted); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.row .pr { font-weight:800; font-size:13.5px; margin-top:4px; }
+.row .add { width:30px; height:30px; border-radius:9px; background:var(--a); color:var(--on-a); display:flex; align-items:center; justify-content:center; flex:none; }
+
+/* Bottom-Nav */
+.nav { flex:none; display:flex; justify-content:space-around; padding:10px 8px 22px; background:var(--surface); border-top:1px solid var(--border); }
+.nav .it { display:flex; flex-direction:column; align-items:center; gap:3px; font-size:9.5px; font-weight:600; color:var(--muted); position:relative; }
+.nav .it.on { color:var(--a); }
+.nav .bdg { position:absolute; top:-5px; right:-8px; min-width:15px; height:15px; padding:0 3px; border-radius:999px;
+  background:var(--a); color:var(--on-a); font-size:9px; font-weight:800; display:flex; align-items:center; justify-content:center;
+  transform:scale(0); }
+.scene.active .bdg.pop { animation: badgePop .5s .35s cubic-bezier(.3,1.4,.5,1) forwards; }
+@keyframes badgePop { to { transform:scale(1); } }
+
+/* Detail-Screen */
+.dphoto { position:relative; height:300px; flex:none; }
+.dphoto img { width:100%; height:100%; object-fit:cover; display:block; }
+.dphoto-grad { position:absolute; inset:0; background:linear-gradient(to bottom, rgba(0,0,0,.4), transparent 26%); }
+.dtop { position:absolute; top:50px; left:15px; right:15px; display:flex; justify-content:space-between; }
+.circ { width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,.92); color:#1a1a1a; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(0,0,0,.25); }
+.sheet { position:relative; flex:1; margin-top:-24px; border-radius:24px 24px 0 0; background:var(--bg); padding:8px 20px 0; z-index:2; }
+.grab { width:38px; height:4px; border-radius:2px; background:color-mix(in srgb, var(--fg) 16%, transparent); margin:0 auto 14px; }
+.d-h { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+.d-nm { font-family:'Sora',sans-serif; font-weight:800; font-size:21px; line-height:1.1; }
+.d-pr { font-family:'Sora',sans-serif; font-weight:800; font-size:19px; color:var(--a); white-space:nowrap; }
+.d-meta { display:flex; gap:8px; margin-top:12px; }
+.d-m { display:flex; align-items:center; gap:4px; font-size:11.5px; font-weight:600; color:var(--muted); padding:5px 10px; border-radius:999px; background:var(--surface); border:1px solid var(--border); }
+.d-desc { font-size:12.5px; line-height:1.55; color:var(--muted); margin-top:14px; }
+.qty { display:flex; align-items:center; gap:18px; margin-top:16px; }
+.qbtn { width:34px; height:34px; border-radius:50%; border:1.5px solid var(--border); display:flex; align-items:center; justify-content:center; color:var(--fg); }
+.qn { font-weight:800; font-size:16px; }
+.ctabar { flex:none; padding:12px 18px 20px; background:var(--bg); border-top:1px solid var(--border); }
+.cta-btn { display:flex; align-items:center; justify-content:space-between; padding:15px 18px; border-radius:16px; font-weight:800; font-size:14.5px;
+  background:var(--a); color:var(--on-a); box-shadow:0 12px 24px -10px color-mix(in srgb, var(--a) 60%, transparent); }
+
+/* Checkout */
+.card { background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:6px 14px; box-shadow:0 8px 22px -16px rgba(0,0,0,.3); }
+.cl { display:flex; align-items:center; gap:11px; padding:10px 0; border-bottom:1px solid var(--border); }
+.cl:last-child { border-bottom:0; }
+.cl .tile { width:40px; height:40px; border-radius:10px; overflow:hidden; flex:none; }
+.cl .info { flex:1; min-width:0; }
+.cl .nm { font-weight:700; font-size:12.5px; }
+.cl .q { font-size:10.5px; color:var(--muted); margin-top:1px; }
+.cl .pr { font-weight:800; font-size:12.5px; }
+.sum { padding:11px 2px 4px; }
+.sum .r { display:flex; justify-content:space-between; font-size:12.5px; font-weight:600; color:var(--muted); padding:3px 0; }
+.sum .r.tot { font-size:15px; font-weight:800; color:var(--fg); padding-top:9px; margin-top:4px; border-top:1px solid var(--border); }
+.sum .r.tot b { color:var(--a); }
+.loyal { margin-top:13px; border-radius:16px; padding:13px; background:color-mix(in srgb, var(--a) 10%, var(--bg)); border:1px solid color-mix(in srgb, var(--a) 26%, transparent); }
+.loyal .t { display:flex; align-items:center; gap:10px; }
+.loyal .ic { width:32px; height:32px; border-radius:9px; background:var(--a); color:var(--on-a); display:flex; align-items:center; justify-content:center; flex:none; }
+.loyal .lt { font-weight:800; font-size:12.5px; }
+.loyal .ls { font-size:10.5px; color:var(--muted); margin-top:1px; }
+.bar { height:7px; border-radius:999px; margin:11px 0 6px; overflow:hidden; background:color-mix(in srgb, var(--fg) 10%, transparent); }
+.bar i { display:block; height:100%; width:64%; border-radius:999px; background:var(--a); }
+.pay-alt { display:flex; align-items:center; justify-content:center; gap:6px; font-size:10.5px; font-weight:600; color:var(--muted); margin-top:9px; }
+
+/* Confirmation */
+.confirm { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:0 28px; }
+.checkwrap { width:104px; height:104px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  background:color-mix(in srgb, var(--a) 14%, var(--bg)); margin-bottom:22px; }
+.checkwrap .ring { width:80px; height:80px; border-radius:50%; background:var(--a); display:flex; align-items:center; justify-content:center;
+  box-shadow:0 14px 30px -10px color-mix(in srgb, var(--a) 60%, transparent); transform:scale(0); }
+.scene.active .checkwrap .ring { animation: ringPop .5s .15s cubic-bezier(.3,1.5,.5,1) forwards; }
+@keyframes ringPop { to { transform:scale(1); } }
+.checkwrap svg path { stroke-dasharray:30; stroke-dashoffset:30; }
+.scene.active .checkwrap svg path { animation: draw .45s .5s ease forwards; }
+@keyframes draw { to { stroke-dashoffset:0; } }
+.confirm h3 { font-family:'Sora',sans-serif; font-weight:800; font-size:21px; }
+.confirm p { font-size:13px; color:var(--muted); margin-top:7px; line-height:1.5; }
+.confirm .eta { margin-top:18px; padding:11px 18px; border-radius:14px; background:var(--surface); border:1px solid var(--border);
+  font-weight:700; font-size:13px; display:flex; align-items:center; gap:8px; }
+.confirm .ordno { margin-top:10px; font-size:11px; color:var(--muted); font-weight:600; letter-spacing:.04em; }
+
+/* Friseur-Serif */
+.mock.friseur .brandtxt b, .mock.friseur .hero-name, .mock.friseur .sect, .mock.friseur .d-nm { font-family:'Cormorant Garamond','Sora',serif; letter-spacing:.01em; }
+
+/* Slot-Grid (Termin-Apps) */
+.slots { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:4px; }
+.slot { padding:10px 0; border-radius:12px; text-align:center; font-size:12.5px; font-weight:700; background:var(--surface); border:1px solid var(--border); color:var(--fg); }
+.slot.on { background:var(--a); color:var(--on-a); border-color:var(--a); }
+.slot.off { opacity:.38; text-decoration:line-through; }
+.svc { display:flex; align-items:center; gap:11px; padding:12px; border-radius:14px; background:var(--surface); border:1px solid var(--border); margin-bottom:8px; }
+.svc .si { width:38px; height:38px; border-radius:11px; display:flex; align-items:center; justify-content:center; flex:none;
+  background:color-mix(in srgb, var(--a) 14%, var(--bg)); color:var(--a); }
+.svc .info { flex:1; }
+.svc .nm { font-weight:700; font-size:13px; }
+.svc .ds { font-size:11px; color:var(--muted); margin-top:1px; }
+.svc .pr { font-weight:800; font-size:13px; color:var(--a); }
+
+/* Klassen-/Kurs-Liste (Fitness) */
+.klass { display:flex; align-items:center; gap:12px; padding:11px; border-radius:14px; background:var(--surface); border:1px solid var(--border); margin-bottom:9px; }
+.klass .tm { text-align:center; flex:none; }
+.klass .tm b { font-family:'Sora',sans-serif; font-weight:800; font-size:14px; display:block; }
+.klass .tm span { font-size:9.5px; color:var(--muted); font-weight:600; }
+.klass .info { flex:1; border-left:1px solid var(--border); padding-left:12px; }
+.klass .nm { font-weight:700; font-size:13px; }
+.klass .ds { font-size:10.5px; color:var(--muted); margin-top:2px; }
+.klass .spots { font-size:10px; font-weight:700; color:var(--a); }
+.memcard { border-radius:18px; padding:15px; color:#fff; position:relative; overflow:hidden;
+  background:linear-gradient(135deg,var(--p),var(--a)); box-shadow:0 14px 30px -14px color-mix(in srgb,var(--a) 60%, transparent); }
+.memcard .lbl { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.12em; opacity:.85; }
+.memcard .who { font-family:'Sora',sans-serif; font-weight:800; font-size:18px; margin-top:3px; }
+.memcard .meta { display:flex; justify-content:space-between; margin-top:16px; font-size:11px; font-weight:600; opacity:.92; }
+
+/* Galerie (Kosmetik) */
+.gal { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.gal .g { border-radius:13px; overflow:hidden; height:78px; position:relative; }
+.gal .g img { width:100%; height:100%; object-fit:cover; }
+.gal .g span { position:absolute; left:7px; bottom:6px; font-size:9.5px; font-weight:700; color:#fff; padding:2px 7px; border-radius:999px; background:rgba(0,0,0,.45); }
+
+/* Fallback-Tile wenn ein Bild nicht lädt */
+.imgfb { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-family:'Sora',sans-serif; font-weight:800; color:rgba(255,255,255,.9);
+  background:linear-gradient(135deg, color-mix(in srgb,var(--p) 60%, var(--a)), var(--a)); }
+
+/* Szenen-Fortschritt unter dem Phone */
+.dots-ui { display:flex; gap:6px; justify-content:center; margin-top:22px; }
+.dots-ui b { width:7px; height:7px; border-radius:999px; background:#cbd2e0; cursor:pointer; transition:.3s; }
+.dots-ui b.on { width:22px; background:#4F46E5; }
+
+@media (prefers-reduced-motion: reduce) {
+  .phone-shell { animation:none; }
+  .scene { transition:none; }
+}
+
+/* ============================================================
+   RESTAURANT FLAGSHIP (Wolt / Uber Eats class) — premium craft
+   ============================================================ */
+.rapp{flex:1;display:flex;flex-direction:column;min-height:0;background:var(--bg);font-family:'Inter',sans-serif;color:var(--fg);position:relative;}
+.r-body{flex:1;overflow:hidden;}
+
+/* edge-to-edge cover */
+.r-cover{position:relative;height:138px;flex:none;}
+.r-cover>img{width:100%;height:100%;object-fit:cover;object-position:center 58%;display:block;}
+.r-cover .scrim{position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.5),rgba(0,0,0,.04) 46%,transparent 70%);}
+.r-glass{position:absolute;top:50px;left:14px;right:14px;display:flex;justify-content:space-between;z-index:4;}
+.r-gbtn{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;background:rgba(15,12,10,.34);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 2px 8px rgba(0,0,0,.2);}
+
+/* overlapping identity card */
+.r-id{position:relative;margin:-26px 14px 0;background:var(--surface);border-radius:22px;padding:15px 15px 14px;z-index:3;box-shadow:0 1px 2px rgba(20,15,10,.05),0 18px 36px -22px rgba(20,15,10,.32);}
+.r-id .top{display:flex;align-items:center;gap:11px;}
+.r-logo{width:46px;height:46px;border-radius:14px;flex:none;display:flex;align-items:center;justify-content:center;font-family:'Sora';font-weight:800;font-size:16px;background:linear-gradient(135deg,color-mix(in srgb,var(--p) 18%,#fff),#fff);color:var(--p);box-shadow:inset 0 0 0 1px var(--border);}
+.r-id h2{font-family:'Sora';font-weight:700;font-size:18px;letter-spacing:-.02em;line-height:1.1;}
+.r-id .tag{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13.5px;color:var(--muted);margin-top:1px;}
+.r-meta{display:flex;align-items:center;flex-wrap:wrap;gap:0 6px;margin-top:12px;font-size:12px;font-weight:600;font-feature-settings:'tnum';}
+.r-meta .star{color:var(--gold);display:inline-flex;align-items:center;gap:3px;}
+.r-meta .dot{color:var(--muted);opacity:.5;}
+.r-meta .mut{color:var(--muted);font-weight:500;}
+.r-meta .ic{display:inline-flex;align-items:center;gap:3px;color:var(--muted);}
+.r-meta .ic svg,.r-meta .star svg{width:13px;height:13px;}
+
+/* segmented toggle + free-delivery nudge */
+.r-seg{display:flex;margin:13px 14px 0;background:color-mix(in srgb,var(--fg) 6%,var(--bg));border-radius:13px;padding:3px;}
+.r-seg span{flex:1;text-align:center;font-size:12.5px;font-weight:700;padding:8px 0;border-radius:10px;color:var(--muted);}
+.r-seg span.on{background:var(--surface);color:var(--fg);box-shadow:0 1px 3px rgba(20,15,10,.14);}
+.r-nudge{margin:11px 14px 0;font-size:11px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:9px;}
+.r-nudge .track{flex:1;height:5px;border-radius:999px;background:color-mix(in srgb,var(--fg) 9%,transparent);overflow:hidden;}
+.r-nudge .track i{display:block;height:100%;width:68%;background:var(--p);border-radius:999px;}
+
+/* overline + popular carousel */
+.r-ovl{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 14px 9px;display:flex;align-items:center;gap:6px;}
+.r-ovl .fl{color:var(--gold);display:inline-flex;}
+.r-ovl .more{margin-left:auto;color:var(--p);letter-spacing:.02em;}
+.r-caro{display:flex;gap:11px;overflow:hidden;padding:0 14px;}
+.r-pc{width:138px;flex:none;}
+.r-pc .ph{height:100px;border-radius:15px;overflow:hidden;position:relative;box-shadow:0 10px 22px -16px rgba(20,15,10,.5);}
+.r-pc .ph img{width:100%;height:100%;object-fit:cover;}
+.r-pc .bs{position:absolute;top:7px;left:7px;font-size:9px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:3px 7px;border-radius:999px;background:var(--gold);color:#3a2600;}
+.r-pc .add{position:absolute;right:8px;bottom:-10px;width:30px;height:30px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px color-mix(in srgb,var(--p) 50%,transparent),0 0 0 2px var(--surface);}
+.r-pc h4{font-size:12.5px;font-weight:700;margin:14px 1px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.r-pc .pr{font-size:12.5px;font-weight:800;color:var(--p);margin-top:2px;font-feature-settings:'tnum';}
+
+/* sticky category tabs */
+.r-tabs{display:flex;gap:17px;padding:14px 14px 0;margin-top:8px;border-bottom:1px solid var(--border);background:color-mix(in srgb,var(--surface) 80%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);position:relative;z-index:2;}
+.r-tab{font-size:13px;font-weight:600;color:var(--muted);padding-bottom:11px;position:relative;white-space:nowrap;}
+.r-tab.on{color:var(--fg);}
+.r-tab.on::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;border-radius:2px;background:var(--p);}
+
+/* photo-forward menu cards */
+.r-menu{padding:2px 14px 0;}
+.r-mh{font-family:'Sora';font-weight:700;font-size:15px;margin:14px 1px 8px;}
+.r-mc{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);}
+.r-mc .txt{flex:1;min-width:0;}
+.r-mc .nm{font-size:14.5px;font-weight:700;letter-spacing:-.01em;}
+.r-mc .tg{display:flex;gap:5px;margin:6px 0;}
+.r-t2{font-size:9px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;padding:2px 6px;border-radius:6px;display:inline-flex;align-items:center;gap:3px;}
+.r-t2.pop{background:color-mix(in srgb,var(--gold) 20%,#fff);color:#946000;}
+.r-t2.veg{background:color-mix(in srgb,var(--green) 16%,#fff);color:var(--green);}
+.r-t2.spi{background:color-mix(in srgb,var(--spicy) 14%,#fff);color:var(--spicy);}
+.r-mc .ds{font-size:11.5px;color:var(--muted);line-height:1.4;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.r-mc .pr{font-size:14px;font-weight:800;font-feature-settings:'tnum';}
+.r-mc .thumb{width:84px;height:84px;border-radius:14px;overflow:hidden;flex:none;position:relative;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06);}
+.r-mc .thumb img{width:100%;height:100%;object-fit:cover;}
+.r-mc .add{position:absolute;right:-7px;bottom:-7px;width:30px;height:30px;border-radius:50%;background:var(--surface);color:var(--p);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(20,15,10,.22);border:1px solid var(--border);}
+
+/* floating cart bar + glass nav */
+.r-cart{position:absolute;left:14px;right:14px;bottom:70px;z-index:9;display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:16px;background:linear-gradient(135deg,var(--p),color-mix(in srgb,var(--p) 84%,#000));color:#fff;box-shadow:0 14px 28px -10px color-mix(in srgb,var(--p) 55%,transparent);}
+.r-cart .cnt{width:22px;height:22px;border-radius:7px;background:rgba(255,255,255,.24);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;}
+.r-cart .lbl{font-size:13.5px;font-weight:700;}
+.r-cart .tot{margin-left:auto;font-size:13.5px;font-weight:800;font-feature-settings:'tnum';}
+.r-nav{flex:none;display:flex;justify-content:space-around;padding:9px 8px 20px;border-top:1px solid var(--border);background:color-mix(in srgb,var(--surface) 82%,transparent);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);}
+.r-nav .it{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9.5px;font-weight:600;color:var(--muted);position:relative;}
+.r-nav .it.on{color:var(--p);}
+.r-nav .bdg{position:absolute;top:-5px;right:-9px;min-width:15px;height:15px;padding:0 3px;border-radius:999px;background:var(--p);color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+
+/* ----- Dish detail bottom sheet ----- */
+.r-dhero{position:relative;height:206px;flex:none;}
+.r-dhero>img{width:100%;height:100%;object-fit:cover;object-position:center 55%;}
+.r-dhero .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.34),transparent 26%);}
+.r-dhero .handle{position:absolute;top:9px;left:50%;transform:translateX(-50%);width:38px;height:4px;border-radius:2px;background:rgba(255,255,255,.9);z-index:3;}
+.r-dhero .x{position:absolute;top:48px;right:14px;width:32px;height:32px;border-radius:50%;background:rgba(15,12,10,.42);backdrop-filter:blur(8px);color:#fff;display:flex;align-items:center;justify-content:center;z-index:3;}
+.r-dsheet{flex:1;overflow:hidden;background:var(--bg);border-radius:22px 22px 0 0;margin-top:-20px;position:relative;z-index:2;padding:6px 16px 0;}
+.r-dsheet .nm{font-family:'Sora';font-weight:700;font-size:20px;letter-spacing:-.02em;margin-top:8px;}
+.r-dtags{display:flex;gap:6px;margin-top:9px;}
+.r-desc{font-size:12.5px;line-height:1.5;color:var(--muted);margin-top:11px;}
+.r-allerg{display:flex;align-items:center;gap:7px;margin-top:12px;padding:9px 11px;border-radius:11px;background:color-mix(in srgb,var(--fg) 4%,var(--bg));font-size:11px;color:var(--muted);font-weight:500;}
+.r-allerg .s{color:var(--gold);margin-left:auto;font-weight:700;display:inline-flex;align-items:center;gap:3px;}
+.r-grp{margin-top:17px;}
+.r-grp .gh{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:700;margin-bottom:9px;}
+.r-grp .req{font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:2px 7px;border-radius:6px;background:color-mix(in srgb,var(--p) 12%,#fff);color:var(--p);}
+.r-grp .opt{font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);}
+.r-opt{display:flex;align-items:center;gap:11px;padding:11px 12px;margin-bottom:8px;border-radius:13px;border:1px solid var(--border);background:var(--surface);font-size:13.5px;font-weight:600;}
+.r-opt.sel{border-color:var(--p);background:color-mix(in srgb,var(--p) 6%,var(--surface));}
+.r-radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex:none;display:flex;align-items:center;justify-content:center;}
+.r-opt.sel .r-radio{border-color:var(--p);}
+.r-opt.sel .r-radio::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--p);}
+.r-chk{width:20px;height:20px;border-radius:6px;border:2px solid var(--border);flex:none;display:flex;align-items:center;justify-content:center;color:#fff;}
+.r-opt.sel .r-chk{border-color:var(--p);background:var(--p);}
+.r-opt .pr{margin-left:auto;font-size:13px;font-weight:700;color:var(--muted);font-feature-settings:'tnum';}
+.r-opt.sel .pr{color:var(--p);}
+.r-note{margin-top:10px;padding:11px 12px;border-radius:12px;border:1px dashed var(--border);font-size:12px;color:var(--muted);}
+.r-cta{flex:none;display:flex;align-items:center;gap:11px;padding:12px 16px 20px;border-top:1px solid var(--border);background:var(--bg);}
+.r-qty{display:flex;align-items:center;gap:14px;padding:9px 13px;border-radius:13px;border:1px solid var(--border);}
+.r-qty .n{font-weight:800;font-size:15px;}
+.r-qty .qb{color:var(--p);display:flex;}
+.r-addbtn{flex:1;display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-radius:15px;font-weight:800;font-size:14px;color:#fff;background:linear-gradient(135deg,var(--p),color-mix(in srgb,var(--p) 82%,#000));box-shadow:0 10px 22px -8px color-mix(in srgb,var(--p) 55%,transparent);}
+
+/* ----- Checkout ----- */
+.r-cohdr{flex:none;padding:6px 16px 12px;display:flex;align-items:center;gap:11px;}
+.r-cohdr .bk{width:32px;height:32px;border-radius:50%;background:color-mix(in srgb,var(--fg) 5%,var(--bg));display:flex;align-items:center;justify-content:center;color:var(--fg);flex:none;}
+.r-cohdr h2{font-family:'Sora';font-weight:700;font-size:17px;}
+.r-cohdr .sub{font-size:11px;color:var(--muted);margin-top:1px;}
+.r-cobody{flex:1;overflow:hidden;padding:0 16px;}
+.r-block{background:var(--surface);border-radius:18px;padding:3px 14px;margin-bottom:11px;box-shadow:0 1px 2px rgba(20,15,10,.05),0 14px 28px -20px rgba(20,15,10,.24);}
+.r-li{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--border);}
+.r-li:last-child{border-bottom:0;}
+.r-li .th{width:44px;height:44px;border-radius:11px;overflow:hidden;flex:none;}
+.r-li .th img{width:100%;height:100%;object-fit:cover;}
+.r-li .nm{font-size:13px;font-weight:700;}
+.r-li .o{font-size:10.5px;color:var(--muted);margin-top:1px;}
+.r-li .pr{margin-left:auto;font-size:13px;font-weight:800;font-feature-settings:'tnum';}
+.r-mapline{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--border);}
+.r-mapline .mini{width:54px;height:46px;border-radius:11px;overflow:hidden;flex:none;position:relative;}
+.r-mapline .mini svg{width:100%;height:100%;display:block;}
+.r-mapline .ad{font-size:12px;font-weight:700;}
+.r-mapline .ad small{display:block;color:var(--muted);font-weight:500;font-size:10.5px;margin-top:1px;}
+.r-mapline .chg{margin-left:auto;font-size:11.5px;font-weight:700;color:var(--p);}
+.r-vouch{display:flex;align-items:center;gap:8px;padding:11px 0;border-bottom:1px solid var(--border);}
+.r-vouch .ap{flex:1;display:flex;align-items:center;gap:6px;color:var(--green);font-weight:700;font-size:12px;background:color-mix(in srgb,var(--green) 10%,#fff);padding:9px 11px;border-radius:10px;}
+.r-vouch .ap .x{margin-left:auto;color:var(--muted);}
+.r-tip{display:flex;gap:7px;padding:11px 0;}
+.r-tip span{flex:1;text-align:center;padding:8px 0;border-radius:10px;font-size:12px;font-weight:700;border:1px solid var(--border);color:var(--muted);font-feature-settings:'tnum';}
+.r-tip span.on{background:var(--p);color:#fff;border-color:var(--p);}
+.r-fees{padding:4px 0 8px;}
+.r-fees .r{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-weight:500;padding:3px 0;font-feature-settings:'tnum';}
+.r-fees .r.disc{color:var(--green);font-weight:600;}
+.r-fees .r.tot{color:var(--fg);font-weight:800;font-size:15px;padding-top:8px;margin-top:5px;border-top:1px solid var(--border);}
+.r-pay{flex:none;padding:10px 16px 20px;border-top:1px solid var(--border);background:var(--bg);}
+.r-applepay{display:flex;align-items:center;justify-content:center;gap:7px;padding:13px;border-radius:14px;background:#000;color:#fff;font-weight:700;font-size:14px;}
+.r-orderbtn{display:flex;align-items:center;justify-content:space-between;margin-top:9px;padding:14px 18px;border-radius:15px;font-weight:800;font-size:14px;color:#fff;background:linear-gradient(135deg,var(--p),color-mix(in srgb,var(--p) 82%,#000));box-shadow:0 10px 22px -8px color-mix(in srgb,var(--p) 55%,transparent);}
+
+/* ----- Live tracking ----- */
+.r-trmap{position:relative;height:256px;flex:none;overflow:hidden;background:linear-gradient(160deg,#e3eaef,#eef2f4);}
+.r-trmap .mapsvg{position:absolute;inset:0;width:100%;height:100%;}
+.r-trsheet{flex:1;background:var(--bg);border-radius:22px 22px 0 0;margin-top:-22px;position:relative;z-index:2;padding:17px 16px 0;overflow:hidden;}
+.r-eta{font-family:'Sora';font-weight:700;font-size:23px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;}
+.r-eta .pill{font-size:11px;font-weight:700;color:var(--p);background:color-mix(in srgb,var(--p) 10%,#fff);padding:4px 10px;border-radius:999px;}
+.r-etasub{font-size:12px;color:var(--muted);margin-top:3px;}
+.r-steps{display:flex;align-items:flex-start;margin:18px 6px 0;}
+.r-step{flex:1;text-align:center;position:relative;}
+.r-step .d{width:26px;height:26px;border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--fg) 8%,var(--bg));color:var(--muted);position:relative;z-index:2;}
+.r-step .d svg{width:13px;height:13px;}
+.r-step.done .d{background:var(--p);color:#fff;}
+.r-step.cur .d{background:var(--p);color:#fff;}
+.scene.active .r-step.cur .d{animation:pulseDot 1.6s infinite;}
+.r-step .l{font-size:9px;font-weight:700;margin-top:6px;color:var(--muted);}
+.r-step.done .l,.r-step.cur .l{color:var(--fg);}
+.r-step::before{content:"";position:absolute;top:12px;left:-50%;width:100%;height:2px;background:color-mix(in srgb,var(--fg) 10%,var(--bg));z-index:1;}
+.r-step:first-child::before{display:none;}
+.r-step.done::before,.r-step.cur::before{background:var(--p);}
+@keyframes pulseDot{0%,100%{box-shadow:0 0 0 5px color-mix(in srgb,var(--p) 18%,transparent);}50%{box-shadow:0 0 0 10px color-mix(in srgb,var(--p) 5%,transparent);}}
+.r-courier{display:flex;align-items:center;gap:11px;margin-top:18px;padding:12px;border-radius:16px;background:var(--surface);box-shadow:0 1px 2px rgba(20,15,10,.05),0 14px 28px -20px rgba(20,15,10,.24);}
+.r-courier .av{width:42px;height:42px;border-radius:50%;overflow:hidden;flex:none;background:color-mix(in srgb,var(--p) 14%,#fff);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--p);}
+.r-courier .av img{width:100%;height:100%;object-fit:cover;}
+.r-courier .nm{font-size:13.5px;font-weight:700;}
+.r-courier .rt{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:3px;margin-top:1px;}
+.r-courier .rt .s{color:var(--gold);display:inline-flex;}
+.r-courier .acts{margin-left:auto;display:flex;gap:8px;}
+.r-cact{width:36px;height:36px;border-radius:50%;background:color-mix(in srgb,var(--p) 10%,var(--surface));color:var(--p);display:flex;align-items:center;justify-content:center;border:1px solid var(--border);}
+.r-osum{display:flex;align-items:center;gap:10px;margin-top:11px;padding:13px;border-radius:14px;border:1px solid var(--border);font-size:12.5px;font-weight:700;}
+.r-osum .o{margin-left:auto;font-size:10px;color:var(--muted);font-family:ui-monospace,monospace;font-weight:600;}
+.r-livedot{width:7px;height:7px;border-radius:50%;background:#e23744;display:inline-block;box-shadow:0 0 0 3px rgba(226,55,68,.2);}
+.scene.active .r-livedot{animation:pulseLive 1.4s infinite;}
+@keyframes pulseLive{0%,100%{box-shadow:0 0 0 3px rgba(226,55,68,.25);}50%{box-shadow:0 0 0 6px rgba(226,55,68,.05);}}
+
+/* ============================================================
+   FRISEUR (Fresha / Booksy / Treatwell — light boutique salon)
+   ============================================================ */
+.fapp{flex:1;display:flex;flex-direction:column;min-height:0;background:var(--bg);font-family:'Inter',sans-serif;color:var(--fg);position:relative;}
+.f-gal{position:relative;height:172px;flex:none;}
+.f-gal>img{width:100%;height:100%;object-fit:cover;display:block;}
+.f-gal .scrim{position:absolute;inset:0;background:linear-gradient(0deg,rgba(20,15,10,.42),transparent 52%);}
+.f-glass{position:absolute;top:50px;left:14px;right:14px;display:flex;justify-content:space-between;z-index:4;}
+.f-gbtn{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;background:rgba(20,15,10,.34);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}
+.f-count{position:absolute;bottom:32px;right:14px;font-size:10px;font-weight:700;color:#fff;background:rgba(20,15,10,.42);backdrop-filter:blur(6px);padding:3px 8px;border-radius:999px;z-index:4;}
+.f-pdots{position:absolute;bottom:22px;left:0;right:0;display:flex;gap:5px;justify-content:center;z-index:4;}
+.f-pdots b{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.5);}
+.f-pdots b.on{width:16px;border-radius:3px;background:#fff;}
+.f-id{position:relative;margin:-22px 14px 0;background:var(--surface);border-radius:22px;padding:15px 16px;z-index:3;box-shadow:0 1px 2px rgba(46,42,38,.05),0 18px 36px -22px rgba(46,42,38,.25);}
+.f-id h2{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:25px;line-height:1.05;letter-spacing:.01em;}
+.f-id .sub{font-size:12px;color:var(--muted);margin-top:1px;}
+.f-id .rate{display:flex;align-items:center;gap:5px;margin-top:9px;font-size:12.5px;font-weight:600;font-feature-settings:'tnum';}
+.f-id .rate .star{color:var(--a);display:inline-flex;}
+.f-id .rate .mut{color:var(--muted);font-weight:500;}
+.f-status{display:flex;gap:7px;margin-top:11px;}
+.f-pill{font-size:10.5px;font-weight:600;padding:5px 10px;border-radius:999px;display:inline-flex;align-items:center;gap:5px;}
+.f-pill.open{background:color-mix(in srgb,#1FA463 12%,#fff);color:#1a7a4a;}
+.f-pill.open .d{width:6px;height:6px;border-radius:50%;background:#1FA463;}
+.f-pill.free{background:color-mix(in srgb,var(--a) 14%,#fff);color:#9c6244;}
+.f-body{flex:1;overflow:hidden;}
+.f-sec{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:18px;margin:15px 16px 10px;}
+.f-team{display:flex;gap:12px;overflow:hidden;padding:0 16px;}
+.f-st{text-align:center;flex:none;width:62px;}
+.f-st .av{width:60px;height:60px;border-radius:50%;overflow:hidden;margin:0 auto;background:color-mix(in srgb,var(--a) 16%,#fff);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--a);box-shadow:inset 0 0 0 1px var(--border);}
+.f-st .av img{width:100%;height:100%;object-fit:cover;}
+.f-st.sel .av{box-shadow:0 0 0 2px var(--a);}
+.f-st .nm{font-size:11.5px;font-weight:700;margin-top:6px;}
+.f-st .ro{font-size:9.5px;color:var(--muted);}
+.f-st .rt{font-size:9.5px;color:var(--a);font-weight:700;margin-top:1px;}
+.f-svc{display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid var(--border);}
+.f-svc .th{width:54px;height:54px;border-radius:13px;overflow:hidden;flex:none;background:color-mix(in srgb,var(--a) 12%,#fff);}
+.f-svc .th img{width:100%;height:100%;object-fit:cover;}
+.f-svc .info{flex:1;min-width:0;}
+.f-svc .nm{font-size:14px;font-weight:700;}
+.f-svc .ds{font-size:11px;color:var(--muted);margin-top:1px;}
+.f-svc .mt{font-size:11px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:4px;}
+.f-svc .mt .tag{color:var(--a);font-weight:700;}
+.f-svc .rt{text-align:right;flex:none;}
+.f-svc .pr{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:17px;}
+.f-svc .tog{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--border);color:var(--a);display:flex;align-items:center;justify-content:center;flex:none;margin-top:5px;margin-left:auto;}
+.f-svc.sel{background:color-mix(in srgb,var(--a) 6%,var(--bg));}
+.f-svc.sel .tog{background:var(--a);color:#fff;border-color:var(--a);}
+.f-cta{position:absolute;left:14px;right:14px;bottom:70px;z-index:9;display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;border-radius:15px;background:var(--a);color:#fff;font-weight:700;font-size:14px;box-shadow:0 14px 28px -10px color-mix(in srgb,var(--a) 55%,transparent);}
+.f-nav{flex:none;display:flex;justify-content:space-around;padding:9px 8px 20px;border-top:1px solid var(--border);background:color-mix(in srgb,var(--surface) 82%,transparent);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);}
+.f-nav .it{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9.5px;font-weight:600;color:var(--muted);}
+.f-nav .it.on{color:var(--a);}
+.f-sub{flex:none;display:flex;align-items:center;gap:10px;padding:8px 14px 12px;}
+.f-bk{width:32px;height:32px;border-radius:50%;background:color-mix(in srgb,var(--fg) 5%,var(--bg));display:flex;align-items:center;justify-content:center;flex:none;}
+.f-sub h3{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:19px;}
+.f-segr{display:flex;margin:0 16px 2px;background:color-mix(in srgb,var(--fg) 5%,var(--bg));border-radius:12px;padding:3px;}
+.f-segr span{flex:1;text-align:center;font-size:12px;font-weight:700;padding:7px 0;border-radius:9px;color:var(--muted);}
+.f-segr span.on{background:var(--surface);color:var(--fg);box-shadow:0 1px 3px rgba(46,42,38,.12);}
+.f-cat{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 4px;}
+.f-cat h4{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:16px;}
+.f-cat .ct{font-size:11px;color:var(--muted);font-weight:600;}
+.f-bar{position:absolute;left:0;right:0;bottom:0;z-index:9;display:flex;align-items:center;gap:12px;padding:12px 16px 20px;background:color-mix(in srgb,var(--surface) 82%,transparent);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--border);}
+.f-bar .sum{flex:1;}
+.f-bar .sum .s{font-size:10.5px;color:var(--muted);font-weight:600;}
+.f-bar .sum .t{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:19px;}
+.f-bar .go{padding:12px 16px;border-radius:13px;background:var(--a);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px;box-shadow:0 10px 22px -8px color-mix(in srgb,var(--a) 55%,transparent);}
+.f-recap{display:flex;align-items:center;gap:9px;margin:2px 16px 12px;padding:8px 11px;border-radius:12px;background:var(--surface);border:1px solid var(--border);font-size:11.5px;font-weight:600;}
+.f-recap .th{width:30px;height:30px;border-radius:8px;overflow:hidden;flex:none;background:color-mix(in srgb,var(--a) 12%,#fff);}
+.f-recap .th img{width:100%;height:100%;object-fit:cover;}
+.f-days{display:flex;gap:8px;overflow:hidden;padding:0 16px;}
+.f-day{flex:none;width:44px;text-align:center;padding:9px 0;border-radius:13px;border:1px solid var(--border);background:var(--surface);}
+.f-day .wd{font-size:10px;color:var(--muted);font-weight:600;}
+.f-day .dt{font-family:'Sora';font-weight:800;font-size:16px;font-feature-settings:'tnum';margin-top:1px;}
+.f-day.on{background:var(--a);color:#fff;border-color:var(--a);}
+.f-day.on .wd{color:rgba(255,255,255,.8);}
+.f-day.off{opacity:.4;}
+.f-helper{margin:13px 16px;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--a) 9%,var(--bg));color:#9c6244;font-size:11.5px;font-weight:600;display:flex;align-items:center;gap:7px;}
+.f-tod{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:14px;margin:6px 16px 8px;color:var(--muted);}
+.f-slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 16px;}
+.f-slot{padding:10px 0;text-align:center;font-family:'Sora';font-weight:700;font-size:13px;font-feature-settings:'tnum';border-radius:11px;border:1px solid var(--border);background:var(--surface);}
+.f-slot.on{background:var(--a);color:#fff;border-color:var(--a);}
+.f-slot.off{opacity:.4;text-decoration:line-through;}
+.f-conf{flex:1;overflow:hidden;display:flex;flex-direction:column;align-items:center;padding:0 18px;text-align:center;}
+.f-crest{width:74px;height:74px;border-radius:50%;background:color-mix(in srgb,var(--a) 14%,var(--bg));display:flex;align-items:center;justify-content:center;margin:16px 0 12px;}
+.f-crest .r{width:54px;height:54px;border-radius:50%;background:var(--a);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 26px -8px color-mix(in srgb,var(--a) 55%,transparent);transform:scale(0);}
+.scene.active .f-crest .r{animation:ringPop2 .5s .15s cubic-bezier(.3,1.5,.5,1) forwards;}
+@keyframes ringPop2{to{transform:scale(1);}}
+.f-conf h3{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:23px;}
+.f-conf p{font-size:12px;color:var(--muted);margin-top:4px;}
+.f-ticket{width:100%;margin-top:15px;background:var(--surface);border-radius:18px;box-shadow:0 1px 2px rgba(46,42,38,.05),0 16px 32px -20px rgba(46,42,38,.28);overflow:hidden;text-align:left;border:1px solid var(--border);}
+.f-ticket .top{padding:14px 16px;}
+.f-tk-sal{display:flex;align-items:center;gap:9px;}
+.f-tk-sal .av{width:34px;height:34px;border-radius:50%;overflow:hidden;flex:none;background:color-mix(in srgb,var(--a) 14%,#fff);}
+.f-tk-sal .av img{width:100%;height:100%;object-fit:cover;}
+.f-tk-sal .nm{font-weight:700;font-size:13px;}
+.f-tk-sal .ro{font-size:10.5px;color:var(--muted);}
+.f-tk-svc{margin-top:11px;display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;}
+.f-tk-svc .pr{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;}
+.f-tk-date{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:18px;margin-top:8px;}
+.f-perf{border-top:1px dashed var(--border);position:relative;height:0;}
+.f-perf::before,.f-perf::after{content:"";position:absolute;top:-7px;width:14px;height:14px;border-radius:50%;background:var(--bg);}
+.f-perf::before{left:-7px;}.f-perf::after{right:-7px;}
+.f-tk-qr{display:flex;align-items:center;gap:11px;padding:14px 16px;}
+.f-tk-qr .qr{width:46px;height:46px;border-radius:10px;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--fg);flex:none;}
+.f-tk-qr .lb{font-size:11px;font-weight:600;}
+.f-tk-qr .lb small{display:block;color:var(--muted);font-family:ui-monospace,monospace;margin-top:2px;}
+.f-policy{font-size:10.5px;color:var(--muted);margin-top:12px;}
+.f-acts{display:flex;gap:8px;width:100%;margin-top:13px;}
+.f-act{flex:1;padding:11px 0;border-radius:12px;border:1px solid var(--border);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:5px;color:var(--fg);}
+
+/* ============================================================
+   FITNESS (Peloton / ClassPass / Apple Fitness+ — dark premium)
+   ============================================================ */
+.gapp{flex:1;display:flex;flex-direction:column;min-height:0;background:var(--bg);font-family:'Inter',sans-serif;color:var(--fg);position:relative;}
+.g-head{flex:none;padding:6px 16px 10px;display:flex;align-items:center;gap:12px;}
+.g-head .greet{flex:1;}
+.g-head .gt{font-family:'Sora';font-weight:700;font-size:20px;letter-spacing:-.02em;}
+.g-head .gs{font-size:11.5px;color:var(--muted);margin-top:2px;}
+.g-ring{width:46px;height:46px;border-radius:50%;flex:none;position:relative;display:flex;align-items:center;justify-content:center;background:conic-gradient(var(--a) 75%, rgba(255,255,255,.12) 0);}
+.g-ring .av{width:38px;height:38px;border-radius:50%;overflow:hidden;background:#222;}
+.g-ring .av img{width:100%;height:100%;object-fit:cover;}
+.g-mem{margin:0 16px;border-radius:16px;padding:13px 14px;display:flex;align-items:center;gap:12px;background:#181C22;box-shadow:inset 0 1px 0 rgba(255,255,255,.06);}
+.g-mem .lbl{font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--a);}
+.g-mem .who{font-size:13.5px;font-weight:700;margin-top:2px;}
+.g-mem .prog{flex:1;}
+.g-mem .bar{height:5px;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden;margin-bottom:5px;}
+.g-mem .bar i{display:block;height:100%;width:67%;background:var(--a);border-radius:999px;}
+.g-mem .vt{font-size:10px;color:var(--muted);font-weight:600;}
+.g-mem .vt b{color:var(--a);}
+.g-mem .qr{width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.07);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--fg);flex:none;font-size:8px;font-weight:700;}
+.g-body{flex:1;overflow:hidden;}
+.g-ovl{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:15px 16px 9px;display:flex;align-items:center;}
+.g-ovl .more{margin-left:auto;color:var(--a);letter-spacing:.02em;}
+.g-hero{position:relative;margin:0 16px;height:170px;border-radius:18px;overflow:hidden;box-shadow:0 16px 34px -18px rgba(0,0,0,.7);}
+.g-hero>img{width:100%;height:100%;object-fit:cover;}
+.g-hero .scrim{position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.85),rgba(0,0,0,.1) 55%,transparent);}
+.g-hero .badge{position:absolute;top:11px;left:11px;display:flex;align-items:center;gap:6px;font-size:10px;font-weight:800;letter-spacing:.05em;padding:5px 10px;border-radius:999px;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);color:#fff;}
+.g-hero .ld{width:7px;height:7px;border-radius:50%;background:#ff4d4d;}
+.scene.active .g-hero .ld{animation:pulseLive 1.4s infinite;}
+.g-hero .foot{position:absolute;left:14px;right:14px;bottom:13px;}
+.g-hero .nm{font-family:'Sora';font-weight:800;font-size:20px;}
+.g-hero .met{display:flex;align-items:center;gap:7px;margin-top:7px;font-size:11.5px;color:rgba(255,255,255,.85);}
+.g-hero .met .av{width:24px;height:24px;border-radius:50%;overflow:hidden;border:1.5px solid rgba(255,255,255,.6);}
+.g-hero .met .av img{width:100%;height:100%;object-fit:cover;}
+.g-hero .start{position:absolute;right:12px;bottom:13px;font-size:11px;font-weight:700;color:var(--on-a);background:var(--a);padding:7px 11px;border-radius:999px;}
+.g-rail{display:flex;gap:11px;overflow:hidden;padding:0 16px;margin-top:4px;}
+.g-cc{width:150px;flex:none;border-radius:15px;overflow:hidden;background:#14171C;box-shadow:inset 0 1px 0 rgba(255,255,255,.05);}
+.g-cc .ph{position:relative;height:96px;}
+.g-cc .ph img{width:100%;height:100%;object-fit:cover;}
+.g-cc .ph .scr{position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.5),transparent 60%);}
+.g-cc .ph .tm{position:absolute;left:9px;bottom:8px;font-family:'Sora';font-weight:800;font-size:15px;color:#fff;}
+.g-cc .meta{padding:9px 11px 11px;}
+.g-cc .nm{font-size:13px;font-weight:700;}
+.g-cc .in{font-size:10.5px;color:var(--muted);margin-top:1px;}
+.g-cap{display:flex;align-items:center;gap:4px;margin-top:8px;}
+.g-cap .dts{display:flex;gap:3px;}
+.g-cap .dts b{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.18);}
+.g-cap .dts b.on{background:var(--a);}
+.g-cap .lab{font-size:10px;font-weight:700;margin-left:auto;}
+.g-cap .lab.ok{color:var(--a);}
+.g-cap .lab.warn{color:#F5A524;}
+.g-cap .lab.full{color:var(--muted);}
+.g-nav{flex:none;display:flex;justify-content:space-around;align-items:flex-end;padding:9px 8px 20px;border-top:1px solid var(--border);background:color-mix(in srgb,var(--surface) 80%,transparent);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);position:relative;}
+.g-nav .it{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9.5px;font-weight:600;color:var(--muted);}
+.g-nav .it.on{color:var(--a);}
+.g-nav .ci{width:50px;height:50px;border-radius:50%;background:var(--a);color:var(--on-a);display:flex;flex-direction:column;align-items:center;justify-content:center;margin-top:-26px;box-shadow:0 8px 20px -6px color-mix(in srgb,var(--a) 60%,transparent);font-size:8.5px;font-weight:800;gap:1px;}
+.g-dhero{position:relative;height:228px;flex:none;}
+.g-dhero>img{width:100%;height:100%;object-fit:cover;}
+.g-dhero .scrim{position:absolute;inset:0;background:linear-gradient(0deg,#0B0D10,rgba(11,13,16,.1) 50%,rgba(0,0,0,.3));}
+.g-dtop{position:absolute;top:50px;left:14px;right:14px;display:flex;justify-content:space-between;z-index:3;}
+.g-dbtn{width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.4);backdrop-filter:blur(8px);color:#fff;display:flex;align-items:center;justify-content:center;}
+.g-dhero .foot{position:absolute;left:16px;right:16px;bottom:12px;}
+.g-dhero .nm{font-family:'Sora';font-weight:800;font-size:24px;}
+.g-dhero .chips{display:flex;gap:7px;margin-top:8px;}
+.g-chip{font-size:10.5px;font-weight:700;padding:4px 9px;border-radius:999px;background:rgba(255,255,255,.14);backdrop-filter:blur(4px);}
+.g-dbody{flex:1;overflow:hidden;padding:14px 16px 0;}
+.g-soc{display:flex;align-items:center;gap:8px;}
+.g-soc .rt{font-size:16px;font-weight:800;display:flex;align-items:center;gap:4px;}
+.g-soc .rt .s{color:var(--gold);font-size:13px;}
+.g-soc .rv{font-size:11px;color:var(--muted);}
+.g-soc .avs{margin-left:auto;display:flex;align-items:center;}
+.g-soc .avs span{width:24px;height:24px;border-radius:50%;overflow:hidden;border:2px solid var(--bg);margin-left:-8px;background:#333;}
+.g-soc .avs span img{width:100%;height:100%;object-fit:cover;}
+.g-soc .avs .pl{font-size:10.5px;color:var(--muted);margin-left:6px;font-weight:600;}
+.g-inst{display:flex;align-items:center;gap:11px;margin-top:14px;padding:12px;border-radius:14px;background:#14171C;box-shadow:inset 0 1px 0 rgba(255,255,255,.05);}
+.g-inst .av{width:46px;height:46px;border-radius:50%;overflow:hidden;flex:none;}
+.g-inst .av img{width:100%;height:100%;object-fit:cover;}
+.g-inst .nm{font-size:14px;font-weight:700;}
+.g-inst .ro{font-size:11px;color:var(--muted);margin-top:1px;}
+.g-inst .fol{margin-left:auto;font-size:11px;font-weight:700;color:var(--a);border:1px solid color-mix(in srgb,var(--a) 50%,transparent);padding:6px 12px;border-radius:999px;}
+.g-feat{display:flex;gap:7px;margin-top:14px;}
+.g-feat span{flex:1;text-align:center;font-size:10px;font-weight:600;color:var(--muted);padding:9px 4px;border-radius:11px;background:rgba(255,255,255,.05);}
+.g-cta{flex:none;display:flex;align-items:center;gap:12px;padding:12px 16px 20px;border-top:1px solid var(--border);background:var(--bg);}
+.g-cta .info{flex:1;}
+.g-cta .info .s{font-size:10.5px;color:var(--muted);}
+.g-cta .info .t{font-size:14px;font-weight:700;}
+.g-cta .go{padding:14px 20px;border-radius:14px;background:var(--a);color:var(--on-a);font-weight:800;font-size:14px;display:flex;align-items:center;gap:6px;box-shadow:0 10px 24px -8px color-mix(in srgb,var(--a) 55%,transparent);}
+.g-sub{flex:none;display:flex;align-items:center;gap:10px;padding:8px 14px 12px;}
+.g-bk{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;flex:none;}
+.g-sub h3{font-family:'Sora';font-weight:700;font-size:15px;}
+.g-days{display:flex;gap:8px;overflow:hidden;padding:0 16px 4px;}
+.g-day{flex:none;width:42px;text-align:center;padding:8px 0;border-radius:13px;background:#14171C;}
+.g-day .wd{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;}
+.g-day .dt{font-family:'Sora';font-weight:800;font-size:16px;margin-top:1px;}
+.g-day.on{background:var(--a);color:var(--on-a);}
+.g-day.on .wd{color:rgba(11,13,16,.7);}
+.g-slot{display:flex;align-items:center;gap:12px;margin:9px 16px 0;padding:12px;border-radius:14px;background:#14171C;box-shadow:inset 0 1px 0 rgba(255,255,255,.05);}
+.g-slot.on{box-shadow:0 0 0 1.5px var(--a),0 8px 20px -10px color-mix(in srgb,var(--a) 40%,transparent);}
+.g-slot .tm{text-align:center;flex:none;border-right:1px solid var(--border);padding-right:12px;}
+.g-slot .tm b{font-family:'Sora';font-weight:800;font-size:17px;display:block;}
+.g-slot .tm span{font-size:9.5px;color:var(--muted);}
+.g-slot .info{flex:1;}
+.g-slot .nm{font-size:13.5px;font-weight:700;}
+.g-slot .in{font-size:10.5px;color:var(--muted);margin-top:1px;}
+.g-toggle{display:flex;align-items:center;gap:10px;margin:13px 16px 0;padding:11px 13px;border-radius:13px;background:#14171C;font-size:12px;font-weight:600;}
+.g-sw{margin-left:auto;width:38px;height:22px;border-radius:999px;background:var(--a);position:relative;}
+.g-sw::after{content:"";position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:#fff;}
+.g-rbar{position:absolute;left:0;right:0;bottom:0;z-index:9;display:flex;align-items:center;gap:12px;padding:12px 16px 20px;background:color-mix(in srgb,var(--surface) 82%,transparent);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--border);}
+.g-rbar .sum{flex:1;font-size:12px;font-weight:700;}
+.g-rbar .sum small{display:block;color:var(--muted);font-weight:500;font-size:10.5px;}
+.g-rbar .go{padding:13px 18px;border-radius:13px;background:var(--a);color:var(--on-a);font-weight:800;font-size:13.5px;box-shadow:0 10px 22px -8px color-mix(in srgb,var(--a) 55%,transparent);}
+.g-conf{flex:1;overflow:hidden;display:flex;flex-direction:column;align-items:center;padding:0 18px;text-align:center;}
+.g-crest{width:84px;height:84px;border-radius:50%;margin:18px 0 12px;display:flex;align-items:center;justify-content:center;background:conic-gradient(var(--a) 100%, rgba(255,255,255,.1) 0);}
+.g-crest .r{width:64px;height:64px;border-radius:50%;background:var(--bg);color:var(--a);display:flex;align-items:center;justify-content:center;}
+.g-conf h3{font-family:'Sora';font-weight:800;font-size:22px;}
+.g-conf p{font-size:12px;color:var(--muted);margin-top:4px;}
+.g-tk{width:100%;margin-top:16px;border-radius:18px;overflow:hidden;background:#14171C;box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 16px 34px -18px rgba(0,0,0,.7);text-align:left;}
+.g-tk .top{display:flex;align-items:center;gap:11px;padding:13px 14px;}
+.g-tk .top .ph{width:46px;height:46px;border-radius:11px;overflow:hidden;flex:none;}
+.g-tk .top .ph img{width:100%;height:100%;object-fit:cover;}
+.g-tk .top .nm{font-size:14px;font-weight:700;}
+.g-tk .top .in{font-size:11px;color:var(--muted);margin-top:2px;}
+.g-perf{border-top:1px dashed rgba(255,255,255,.18);position:relative;height:0;}
+.g-perf::before,.g-perf::after{content:"";position:absolute;top:-7px;width:14px;height:14px;border-radius:50%;background:var(--bg);}
+.g-perf::before{left:-7px;}.g-perf::after{right:-7px;}
+.g-tk .qrb{display:flex;align-items:center;gap:12px;padding:14px;}
+.g-tk .qrb .qr{width:54px;height:54px;border-radius:12px;background:#fff;color:#111;display:flex;align-items:center;justify-content:center;flex:none;}
+.g-tk .qrb .lb{font-size:12px;font-weight:700;}
+.g-tk .qrb .lb small{display:block;color:var(--muted);font-family:ui-monospace,monospace;font-weight:500;margin-top:2px;}
+.g-foot{display:flex;gap:8px;width:100%;margin-top:14px;}
+.g-fb{flex:1;padding:12px 0;border-radius:13px;font-size:12.5px;font-weight:800;text-align:center;}
+.g-fb.ghost{border:1px solid var(--border);color:var(--fg);}
+.g-fb.solid{background:var(--a);color:var(--on-a);}
+
+/* ============================================================
+   KOSMETIK (GlossGenius / Fresha — warm cream/rosé editorial)
+   reuses .f-* for date/time + confirmation (auto-themed)
+   ============================================================ */
+.bapp{flex:1;display:flex;flex-direction:column;min-height:0;background:var(--bg);font-family:'Inter',sans-serif;color:var(--fg);position:relative;}
+.b-cover{position:relative;height:150px;flex:none;}
+.b-cover>img{width:100%;height:100%;object-fit:cover;}
+.b-cover .scrim{position:absolute;inset:0;background:linear-gradient(0deg,rgba(40,25,20,.4),transparent 55%);}
+.b-glass{position:absolute;top:50px;left:14px;right:14px;display:flex;justify-content:space-between;z-index:4;}
+.b-gbtn{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;background:rgba(40,25,20,.32);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}
+.b-logo{position:absolute;left:50%;bottom:-26px;transform:translateX(-50%);width:62px;height:62px;border-radius:50%;background:var(--surface);border:3px solid var(--bg);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:20px;color:var(--p);z-index:4;box-shadow:0 8px 18px -8px rgba(40,25,20,.3);}
+.b-idc{text-align:center;margin-top:32px;padding:0 16px;}
+.b-idc h2{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:25px;}
+.b-idc .sub{font-size:11.5px;color:var(--muted);margin-top:1px;}
+.b-rate{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:9px;}
+.b-rate .big{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:22px;}
+.b-rate .st{color:var(--a);font-size:13px;letter-spacing:1px;}
+.b-rate .mut{font-size:11px;color:var(--muted);}
+.b-body{flex:1;overflow:hidden;}
+.b-eye{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:15px 16px 10px;}
+.b-look{display:flex;gap:10px;overflow:hidden;padding:0 16px;}
+.b-lk{width:114px;flex:none;border-radius:16px;overflow:hidden;height:142px;position:relative;background:color-mix(in srgb,var(--a) 12%,#fff);}
+.b-lk img{width:100%;height:100%;object-fit:cover;}
+.b-lk .cap{position:absolute;left:8px;bottom:8px;font-size:9.5px;font-weight:700;color:#fff;background:rgba(0,0,0,.42);padding:3px 8px;border-radius:999px;}
+.b-tr{display:flex;align-items:center;gap:12px;padding:13px 16px;border-top:1px solid var(--border);}
+.b-tr .th{width:54px;height:54px;border-radius:14px;overflow:hidden;flex:none;background:color-mix(in srgb,var(--a) 12%,#fff);}
+.b-tr .th img{width:100%;height:100%;object-fit:cover;}
+.b-tr .info{flex:1;}
+.b-tr .nm{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:16px;}
+.b-tr .mt{font-size:11px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:4px;}
+.b-tr .mt .tag{color:var(--a);font-weight:700;}
+.b-tr .pr{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:17px;color:var(--p);}
+.b-cta{position:absolute;left:14px;right:14px;bottom:18px;z-index:9;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:15px;background:var(--a);color:var(--on-a);font-weight:700;font-size:14px;box-shadow:0 14px 28px -10px color-mix(in srgb,var(--a) 55%,transparent);}
+.b-ba{position:relative;height:208px;flex:none;overflow:hidden;}
+.b-ba img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+.b-ba .after{clip-path:inset(0 0 0 52%);}
+.b-ba .divider{position:absolute;top:0;bottom:0;left:52%;width:2px;background:#fff;box-shadow:0 0 8px rgba(0,0,0,.3);z-index:2;}
+.b-ba .handle{position:absolute;top:50%;left:52%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--p);box-shadow:0 3px 10px rgba(0,0,0,.3);z-index:2;}
+.b-ba .lbl{position:absolute;bottom:11px;font-size:10px;font-weight:700;color:#fff;background:rgba(0,0,0,.45);padding:3px 9px;border-radius:999px;z-index:2;}
+.b-ba .lbl.bf{left:11px;}.b-ba .lbl.af{right:11px;}
+.b-ba .x{position:absolute;top:48px;right:14px;width:32px;height:32px;border-radius:50%;background:rgba(40,25,20,.4);backdrop-filter:blur(8px);color:#fff;display:flex;align-items:center;justify-content:center;z-index:4;}
+.b-dsheet{flex:1;overflow:hidden;background:var(--bg);border-radius:22px 22px 0 0;margin-top:-18px;position:relative;z-index:2;padding:8px 16px 0;}
+.b-dsheet .nm{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:22px;margin-top:6px;}
+.b-dmeta{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:12px;color:var(--muted);font-weight:600;}
+.b-dmeta .s{color:var(--a);}
+.b-dmeta .pr{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;color:var(--p);font-size:15px;margin-left:auto;}
+.b-vg{font-size:12px;font-weight:700;margin:15px 0 9px;}
+.b-vars{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.b-var{padding:11px 12px;border-radius:13px;border:1px solid var(--border);background:var(--surface);font-size:12.5px;font-weight:600;display:flex;justify-content:space-between;align-items:center;}
+.b-var.sel{border-color:var(--a);background:color-mix(in srgb,var(--a) 8%,var(--surface));}
+.b-var .px{color:var(--muted);font-size:11px;}
+.b-var.sel .px{color:var(--p);}
+.b-addon{display:flex;align-items:center;gap:10px;padding:11px 0;border-top:1px solid var(--border);font-size:13px;font-weight:600;}
+.b-addon .chk{width:20px;height:20px;border-radius:6px;border:2px solid var(--border);flex:none;display:flex;align-items:center;justify-content:center;color:#fff;}
+.b-addon.sel .chk{background:var(--a);border-color:var(--a);}
+.b-addon .px{margin-left:auto;font-weight:700;color:var(--p);font-size:12.5px;}
+.b-rev{margin-top:14px;padding:13px;border-radius:14px;background:var(--surface);border:1px solid var(--border);}
+.b-rev .h{display:flex;align-items:center;gap:8px;}
+.b-rev .av{width:30px;height:30px;border-radius:50%;overflow:hidden;flex:none;background:color-mix(in srgb,var(--a) 14%,#fff);}
+.b-rev .av img{width:100%;height:100%;object-fit:cover;}
+.b-rev .who{font-size:12px;font-weight:700;}
+.b-rev .vf{font-size:9px;font-weight:700;color:#1a7a4a;background:color-mix(in srgb,#1FA463 12%,#fff);padding:2px 6px;border-radius:6px;}
+.b-rev .st{color:var(--a);font-size:10px;margin-left:auto;}
+.b-rev .q{font-size:12px;line-height:1.5;color:var(--fg);margin-top:8px;font-style:italic;font-family:'Cormorant Garamond',Georgia,serif;font-size:14px;}
+.b-tbar{position:absolute;left:0;right:0;bottom:0;z-index:9;display:flex;align-items:center;gap:12px;padding:12px 16px 20px;background:color-mix(in srgb,var(--surface) 82%,transparent);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--border);}
+.b-tbar .sum{flex:1;}
+.b-tbar .sum .t{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:18px;}
+.b-tbar .sum small{display:block;color:var(--muted);font-size:10px;}
+.b-tbar .go{padding:12px 16px;border-radius:13px;background:var(--a);color:var(--on-a);font-weight:700;font-size:12.5px;box-shadow:0 10px 22px -8px color-mix(in srgb,var(--a) 55%,transparent);}
+.b-loy{display:flex;align-items:center;gap:9px;margin-top:13px;width:100%;padding:11px 13px;border-radius:13px;background:color-mix(in srgb,var(--a) 10%,var(--bg));font-size:11.5px;font-weight:600;}
+.b-loy .dts{margin-left:auto;display:flex;gap:4px;}
+.b-loy .dts b{width:7px;height:7px;border-radius:50%;background:var(--border);}
+.b-loy .dts b.on{background:var(--a);}
+</style>
+<style id="nx-anim">
+@media (prefers-reduced-motion:no-preference){
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1);will-change:opacity,transform;}
+  .reveal.in{opacity:1;transform:none;}
+  .nx-grid{animation:nxGrid 26s linear infinite;}
+  @keyframes nxGrid{from{background-position:0 0,0 0}to{background-position:46px 46px,46px 46px}}
+  .nx-glow{animation:nxDrift 22s ease-in-out infinite;}
+  .nx-glow:nth-of-type(2){animation-duration:18s;animation-direction:reverse;}
+  @keyframes nxDrift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(20px,-16px) scale(1.06)}66%{transform:translate(-16px,14px) scale(.96)}}
+  .text-grad{background-size:220% auto;animation:nxPan 9s linear infinite;}
+  @keyframes nxPan{to{background-position:220% center}}
+  .nx-btn{transition:box-shadow .3s cubic-bezier(.22,1,.36,1),transform .3s cubic-bezier(.22,1,.36,1);}
+  .nx-btn:hover{transform:translateY(-2px);}
+  a[href].border:hover{transform:translateY(-2px);transition:transform .3s cubic-bezier(.22,1,.36,1);}
+}
+</style>
+<style id="nx-bg-css">
+html{background:#05070e;}
+body{background-color:transparent!important;}
+.nx-bg{position:fixed;inset:0;z-index:-1;overflow:hidden;background:#05070e;}
+.nx-bg .au{position:absolute;border-radius:50%;filter:blur(64px);mix-blend-mode:screen;will-change:transform;}
+.nx-bg .au1{width:46vw;height:46vw;left:-6vw;top:-8vw;opacity:.72;background:radial-gradient(circle,#3f6dff,transparent 62%);animation:auA 24s ease-in-out infinite;}
+.nx-bg .au2{width:42vw;height:42vw;right:-6vw;top:3vh;opacity:.62;background:radial-gradient(circle,#28d7ee,transparent 62%);animation:auB 19s ease-in-out infinite;}
+.nx-bg .au3{width:50vw;height:50vw;left:20vw;top:52vh;opacity:.5;background:radial-gradient(circle,#6c8dff,transparent 64%);animation:auA 30s ease-in-out infinite reverse;}
+.nx-bg .au4{width:40vw;height:40vw;right:2vw;bottom:-16vw;opacity:.42;background:radial-gradient(circle,#ff6568,transparent 66%);animation:auB 27s ease-in-out infinite;}
+@keyframes auA{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(6%,-5%) scale(1.16)}}
+@keyframes auB{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(-5%,4%) scale(1.12)}66%{transform:translate(5%,-4%) scale(1.07)}}
+.nx-bg .nxg{position:absolute;inset:0;background-image:linear-gradient(rgba(120,150,255,.55) 1px,transparent 1px),linear-gradient(90deg,rgba(120,150,255,.55) 1px,transparent 1px);background-size:3rem 3rem;opacity:.5;-webkit-mask-image:radial-gradient(ellipse 100% 80% at 50% 16%,#000 22%,transparent 82%);mask-image:radial-gradient(ellipse 100% 80% at 50% 16%,#000 22%,transparent 82%);animation:nxgY 15s linear infinite;}
+@keyframes nxgY{to{background-position-y:3rem}}
+.bg-nx-bg2{background-color:rgba(9,13,26,.42)!important;}
+footer{background-color:rgba(5,7,14,.35);}
+@media (prefers-reduced-motion:reduce){.nx-bg .au,.nx-bg .nxg{animation:none;}}
+</style>
+<style id="nx-upgrade">
+/* ===== Nexovest design upgrade pass (dark navy + #3f6dff + #28d7ee) ===== */
+
+/* device: physical side buttons (power right, volume rocker left) */
+.device::before{content:"";position:absolute;right:-3px;top:122px;width:3px;height:56px;border-radius:2px;
+ background:linear-gradient(180deg,#3c3c44,#17171d);
+ box-shadow:-300px -26px 0 0 #26262c;z-index:0;}
+
+/* orbital aqua/blue sheen behind every phone + soft floor glow */
+.phone-shell{position:relative;}
+.phone-shell::before{content:"";position:absolute;inset:-8% -16%;border-radius:50%;z-index:-1;
+ background:conic-gradient(from 215deg, rgba(63,109,255,0) 0%, rgba(63,109,255,.5) 14%, rgba(40,215,238,.55) 30%, rgba(63,109,255,0) 46%);
+ filter:blur(24px);opacity:.5;animation:nxRingPulse 6s ease-in-out infinite alternate;}
+.phone-shell::after{content:"";position:absolute;left:6%;right:6%;bottom:-30px;height:44px;border-radius:50%;z-index:-2;
+ background:radial-gradient(ellipse at center, rgba(63,109,255,.30), rgba(40,215,238,.12) 55%, transparent 78%);filter:blur(12px);}
+@keyframes nxRingPulse{from{opacity:.35}to{opacity:.85}}
+
+/* scene progress dots -> dark theme + blue->aqua active */
+.dots-ui b{background:rgba(255,255,255,.16);}
+.dots-ui b.on{background:linear-gradient(90deg,#3f6dff,#28d7ee);}
+
+/* header: gradient hairline instead of flat border */
+header{border-bottom-color:transparent!important;}
+header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;pointer-events:none;
+ background:linear-gradient(90deg,transparent 2%,rgba(63,109,255,.55) 30%,rgba(40,215,238,.55) 70%,transparent 98%);}
+
+/* cards: inner top highlight + deeper ambient shadow */
+.nx-card{background-image:linear-gradient(180deg,rgba(255,255,255,.035),transparent 40%);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 18px 40px -28px rgba(5,7,14,.9);}
+
+/* primary buttons: subtle moving sheen on hover */
+.nx-btn{background:linear-gradient(110deg,#3f6dff 8%,#28d7ee 46%,#6ee9f6 54%,#28d7ee 62%,#3f6dff 96%);
+ background-size:200% auto;
+ transition:background-position .6s cubic-bezier(.22,1,.36,1),box-shadow .3s cubic-bezier(.22,1,.36,1),transform .3s cubic-bezier(.22,1,.36,1);}
+.nx-btn:hover{background-position:95% center;}
+
+/* floating glass chips around the hero phone */
+.fchips{position:absolute;inset:0;pointer-events:none;z-index:6;}
+.fchip{position:absolute;display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:999px;
+ background:rgba(13,19,36,.78);border:1px solid rgba(108,141,255,.4);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+ font:600 12px/1 Inter,sans-serif;color:#eef2fb;white-space:nowrap;
+ box-shadow:0 14px 30px -14px rgba(40,215,238,.4),inset 0 1px 0 rgba(255,255,255,.08);
+ animation:chipFloat 7s ease-in-out infinite;}
+.fchip .d{width:7px;height:7px;border-radius:50%;background:#28d7ee;animation:chipPulse 2s ease-in-out infinite;}
+.fchip .ck{color:#6ee9f6;font-weight:800;}
+.fc1{top:6%;right:-12%;animation-delay:-1s;}
+.fc2{top:47%;left:-36%;animation-delay:-3.4s;}
+.fc3{bottom:19%;right:-27%;animation-delay:-5.2s;}
+@keyframes chipFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes chipPulse{0%,100%{box-shadow:0 0 0 3px rgba(40,215,238,.22)}50%{box-shadow:0 0 0 7px rgba(40,215,238,.05)}}
+@media(max-width:920px){.fchip{display:none}}
+@media(prefers-reduced-motion:reduce){.fchip,.phone-shell::before{animation:none}}
+</style>
+</head>
+
+<body class="font-sans text-nx-fg bg-nx-bg antialiased">
+<div class="nx-bg" aria-hidden="true">
+  <div class="au au1"></div><div class="au au2"></div><div class="au au3"></div><div class="au au4"></div>
+  <div class="nxg"></div>
+</div>
+
+<!-- ===================== HEADER ===================== -->
+<header class="sticky top-0 z-50 backdrop-blur-xl bg-nx-bg/80 border-b border-nx-line">
+  <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-2.5">
+      <span class="w-8 h-8 rounded-xl nx-btn grid place-items-center font-display font-extrabold text-[15px]">N</span>
+      <span class="font-display font-extrabold text-lg tracking-tight text-white">Nexovest</span>
+    </a>
+    <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-nx-mut">
+      <div class="relative group">
+        <button class="hover:text-white transition flex items-center gap-1 h-16">Lösungen <span class="text-[10px] mt-0.5">▼</span></button>
+        <div class="absolute left-1/2 -translate-x-1/2 top-full opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-200">
+          <div class="nx-card rounded-2xl p-2 w-64 shadow-2xl shadow-black/50">
+            <a href="restaurant.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-nx-surf2 transition"><span class="w-2.5 h-2.5 rounded-full" style="background:#E23744"></span><span><span class="block text-white font-semibold leading-tight">Restaurant-App</span><span class="block text-xs text-nx-mut">Bestellung & Lieferung</span></span></a>
+            <a href="friseur.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-nx-surf2 transition"><span class="w-2.5 h-2.5 rounded-full" style="background:#C2876B"></span><span><span class="block text-white font-semibold leading-tight">Friseur-App</span><span class="block text-xs text-nx-mut">Termine & Stylisten</span></span></a>
+            <a href="fitness.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-nx-surf2 transition"><span class="w-2.5 h-2.5 rounded-full" style="background:#A3E635"></span><span><span class="block text-white font-semibold leading-tight">Fitness-App</span><span class="block text-xs text-nx-mut">Kurse & Check-in</span></span></a>
+            <a href="kosmetik.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-nx-surf2 transition"><span class="w-2.5 h-2.5 rounded-full" style="background:#C58B82"></span><span><span class="block text-white font-semibold leading-tight">Kosmetik-App</span><span class="block text-xs text-nx-mut">Behandlungen & Buchung</span></span></a>
+          </div>
+        </div>
+      </div>
+      <a href="#ablauf" class="hover:text-white transition">Ablauf</a>
+      <a href="#warum" class="hover:text-white transition">Warum Nexovest</a>
+    </nav>
+    <a href="#kontakt" class="text-sm font-semibold nx-btn px-4 py-2.5 rounded-full transition">
+      Kostenloses Erstgespräch
+    </a>
+  </div>
+</header>
+
+<!-- ===================== HERO ===================== -->
+<section class="relative overflow-hidden">
+  <div class="max-w-6xl mx-auto px-5 pt-16 pb-10 md:pt-24 md:pb-20 grid md:grid-cols-2 gap-12 items-center relative">
+    <div>
+      <a href="index.html" class="inline-flex items-center gap-1.5 text-xs font-semibold text-nx-mut hover:text-white mb-5 transition">&larr; Alle L&ouml;sungen</a>
+      <div><span class="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full" style="background:rgba(197,139,130,.14);border:1px solid rgba(197,139,130,.32);color:#e0a99f">
+        <span class="w-1.5 h-1.5 rounded-full" style="background:#C58B82"></span>
+        Kosmetik &amp; Nagelstudio
+      </span></div>
+      <h1 class="font-display font-extrabold text-4xl md:text-[3.3rem] leading-[1.05] tracking-tight mt-5 text-white">
+        Behandlungen buchen &mdash;<br><span class="text-grad">elegant wie Ihr Studio.</span>
+      </h1>
+      <p class="text-nx-mut2 text-lg mt-5 leading-relaxed max-w-md">
+        Behandlungsmen&uuml; mit Dauer &amp; Preis, Vorher/Nachher-Galerie, Online-Terminbuchung und Treuepunkte &mdash; eine App so gepflegt wie Ihre Arbeit. <b class="text-white">Zahlung nur bei 100 % Zufriedenheit.</b>
+      </p>
+      <div class="flex flex-wrap items-center gap-3 mt-8">
+        <a href="#kontakt" class="nx-btn font-semibold px-6 py-3.5 rounded-full transition">
+          Kostenloses Erstgespr&auml;ch
+        </a>
+        <a href="#detail" class="font-semibold text-white px-6 py-3.5 rounded-full border border-nx-line hover:bg-nx-surf transition">
+          Die App ansehen &darr;
+        </a>
+      </div>
+      <div class="flex items-center gap-6 mt-9 text-sm text-nx-mut">
+        <div><b class="text-white font-display text-xl">Online</b> Buchung</div>
+        <div class="w-px h-8 bg-nx-line"></div>
+        <div><b class="text-white font-display text-xl">Galerie</b> Vorher/Nachher</div>
+        <div class="w-px h-8 bg-nx-line"></div>
+        <div><b class="text-white font-display text-xl">Treue</b> Punkte</div>
+      </div>
+    </div>
+
+    <!-- Flagship-Phone (Restaurant, animiert) -->
+    <div class="stage justify-self-center md:justify-self-end" style="--p:#C58B82">
+      <div class="halo"></div>
+      <div class="fchips" aria-hidden="true"><span class="fchip fc1"><span class="d"></span>Live-Demo</span><span class="fchip fc2"><span class="ck">&#10003;</span>Online-Buchung</span><span class="fchip fc3"><span class="ck">&#10003;</span>Treuepunkte</span></div>
+      <div class="phone-shell">
+        <div class="device">
+          <div class="island"></div>
+          <div class="screen">
+            <div class="mock kosmetik" data-flow="kosmetik"
+                 style="--p:#6E4B45;--a:#C58B82;--on-a:#fff;--bg:#F8F0EC;--surface:#FDFAF7;--fg:#33231F;--muted:#9C857C;--border:#EBDDD5;--gold:#C9A07A">
+              <!-- Scenes werden gemeinsam für Hero + Sektion gerendert (siehe unten Template) -->
+            </div>
+            <div class="tapper"><i></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== DIE APP IM DETAIL ===================== -->
+<section id="detail" class="max-w-6xl mx-auto px-5 py-16 md:py-24">
+  <div class="text-center max-w-2xl mx-auto">
+    <span class="text-xs font-semibold uppercase tracking-widest text-brand-600">Die App im Detail</span>
+    <h2 class="font-display font-extrabold text-3xl md:text-4xl tracking-tight mt-3 text-white">Von der Inspiration zum Termin</h2>
+    <p class="text-nx-mut2 mt-4 text-lg">Vier Schritte, die Ihre Arbeit zeigen und den Kalender f&uuml;llen. Tippen Sie sich durch die Live-Demo.</p>
+  </div>
+  <div class="grid md:grid-cols-2 gap-12 items-center mt-16">
+    <div class="stage md:order-2" style="--p:#C58B82">
+      <div class="halo" style="opacity:.3"></div>
+      <div class="phone-shell" style="animation-delay:-1s">
+        <div class="device"><div class="island"></div><div class="screen">
+          <div class="mock kosmetik" data-flow="kosmetik" style="--p:#6E4B45;--a:#C58B82;--on-a:#fff;--bg:#F8F0EC;--surface:#FDFAF7;--fg:#33231F;--muted:#9C857C;--border:#EBDDD5;--gold:#C9A07A"></div>
+          <div class="tapper"><i></i></div>
+        </div></div>
+      </div>
+    </div>
+    <div class="md:order-1 space-y-4">
+      <div class="nx-card nx-card-hover rounded-2xl p-5 flex gap-4">
+        <div class="w-9 h-9 rounded-xl nx-chip grid place-items-center font-display font-extrabold flex-none">1</div>
+        <div><h3 class="font-semibold text-white">Studio-Profil &amp; Galerie</h3><p class="text-nx-mut2 text-sm mt-1.5 leading-relaxed">Editorial-Cover mit rundem Logo, Serif-Bewertung und ein Look-Book aus echten Vorher/Nachher-Bildern.</p></div>
+      </div>
+      <div class="nx-card nx-card-hover rounded-2xl p-5 flex gap-4">
+        <div class="w-9 h-9 rounded-xl nx-chip grid place-items-center font-display font-extrabold flex-none">2</div>
+        <div><h3 class="font-semibold text-white">Behandlung &amp; Vorher/Nachher</h3><p class="text-nx-mut2 text-sm mt-1.5 leading-relaxed">Varianten und Extras mit Live-Summe, dazu ein ziehbarer Vorher/Nachher-Slider &mdash; das Argument f&uuml;r Beauty.</p></div>
+      </div>
+      <div class="nx-card nx-card-hover rounded-2xl p-5 flex gap-4">
+        <div class="w-9 h-9 rounded-xl nx-chip grid place-items-center font-display font-extrabold flex-none">3</div>
+        <div><h3 class="font-semibold text-white">Datum &amp; Uhrzeit</h3><p class="text-nx-mut2 text-sm mt-1.5 leading-relaxed">Ruhiger Kalender mit Verf&uuml;gbarkeits-Punkten und &bdquo;wenige frei&ldquo;-Hinweisen.</p></div>
+      </div>
+      <div class="nx-card nx-card-hover rounded-2xl p-5 flex gap-4">
+        <div class="w-9 h-9 rounded-xl nx-chip grid place-items-center font-display font-extrabold flex-none">4</div>
+        <div><h3 class="font-semibold text-white">Voucher-Best&auml;tigung</h3><p class="text-nx-mut2 text-sm mt-1.5 leading-relaxed">Stationery-Ticket mit Gold-Linie, Buchungscode, Anzahlung und Treuepunkte-Fortschritt.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ROI / VORTEILE ===================== -->
+<section class="bg-nx-bg2 border-y border-nx-line">
+  <div class="max-w-6xl mx-auto px-5 py-16 md:py-20">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <span class="text-xs font-semibold uppercase tracking-widest text-brand-600">Warum sich das rechnet</span>
+      <h2 class="font-display font-extrabold text-3xl md:text-4xl tracking-tight mt-3 text-white">Mehr Buchungen, weniger DMs</h2>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div class="nx-card rounded-2xl p-6"><div class="font-display text-4xl text-grad font-extrabold">Online</div><p class="text-nx-mut2 text-sm mt-3 leading-relaxed">Buchung rund um die Uhr &mdash; statt DM-Chaos und verpasster Anrufe.</p></div>
+      <div class="nx-card rounded-2xl p-6"><div class="font-display text-4xl text-grad font-extrabold">Galerie</div><p class="text-nx-mut2 text-sm mt-3 leading-relaxed">Vorher/Nachher verkauft Ihre Arbeit &mdash; Kund:innen buchen den Look direkt.</p></div>
+      <div class="nx-card rounded-2xl p-6"><div class="font-display text-4xl text-grad font-extrabold">+</div><p class="text-nx-mut2 text-sm mt-3 leading-relaxed">Treuepunkte &amp; Auffrisch-Erinnerungen bringen Kund:innen verl&auml;sslich zur&uuml;ck.</p></div>
+      <div class="nx-card rounded-2xl p-6"><div class="font-display text-4xl text-grad font-extrabold">Marke</div><p class="text-nx-mut2 text-sm mt-3 leading-relaxed">Ihr Studio als eigene App &mdash; pers&ouml;nlich, edel, unverwechselbar.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WARUM NEXOVEST ===================== -->
+<section id="warum" class="bg-nx-bg2 border-y border-nx-line">
+  <div class="max-w-6xl mx-auto px-5 py-16 md:py-24">
+    <div class="text-center max-w-2xl mx-auto">
+      <span class="text-xs font-semibold uppercase tracking-widest text-brand-600">Warum Nexovest</span>
+      <h2 class="font-display font-extrabold text-3xl md:text-4xl tracking-tight mt-3">Ein Partner, kein anonymer Anbieter</h2>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-14">
+      <div class="nx-card nx-card-hover rounded-2xl p-6">
+        <div class="w-11 h-11 rounded-xl grid place-items-center nx-chip text-xl">✓</div>
+        <h3 class="font-display font-bold text-lg mt-4">Zahlung nur bei 100&nbsp;% Zufriedenheit</h3>
+        <p class="text-nx-mut2 text-sm mt-2 leading-relaxed">Sie sehen zuerst das fertige Ergebnis. Erst wenn es passt, wird gezahlt — vorher nicht.</p>
+      </div>
+      <div class="nx-card nx-card-hover rounded-2xl p-6">
+        <div class="w-11 h-11 rounded-xl grid place-items-center nx-chip text-xl">📍</div>
+        <h3 class="font-display font-bold text-lg mt-4">Persönlich aus Hannover</h3>
+        <p class="text-nx-mut2 text-sm mt-2 leading-relaxed">Ein fester Ansprechpartner aus der Region — gerne vor Ort. Kein Callcenter, kein Ausland.</p>
+      </div>
+      <div class="nx-card nx-card-hover rounded-2xl p-6">
+        <div class="w-11 h-11 rounded-xl grid place-items-center nx-chip text-xl">⚙️</div>
+        <h3 class="font-display font-bold text-lg mt-4">Anbieterunabhängig</h3>
+        <p class="text-nx-mut2 text-sm mt-2 leading-relaxed">Wir empfehlen die für Sie beste Technik — nicht die mit der höchsten Provision.</p>
+      </div>
+      <div class="nx-card nx-card-hover rounded-2xl p-6">
+        <div class="w-11 h-11 rounded-xl grid place-items-center nx-chip text-xl">🔒</div>
+        <h3 class="font-display font-bold text-lg mt-4">DSGVO-konform gedacht</h3>
+        <p class="text-nx-mut2 text-sm mt-2 leading-relaxed">Datenschutz von Anfang an mitgeplant — Ihre Kundendaten gehören Ihnen.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ABLAUF ===================== -->
+<section id="ablauf" class="max-w-6xl mx-auto px-5 py-16 md:py-24">
+  <div class="text-center max-w-2xl mx-auto">
+    <span class="text-xs font-semibold uppercase tracking-widest text-brand-600">Ablauf</span>
+    <h2 class="font-display font-extrabold text-3xl md:text-4xl tracking-tight mt-3">In vier Schritten zur eigenen App</h2>
+  </div>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-14">
+    <div class="relative">
+      <div class="font-display font-extrabold text-5xl text-grad">01</div>
+      <h3 class="font-display font-bold text-lg mt-2">Gespräch</h3>
+      <p class="text-nx-mut2 text-sm mt-2 leading-relaxed">Kostenlos & unverbindlich. Wir verstehen Ihr Geschäft und Ihre Ziele.</p>
+    </div>
+    <div>
+      <div class="font-display font-extrabold text-5xl text-grad">02</div>
+      <h3 class="font-display font-bold text-lg mt-2">Konzept &amp; Demo</h3>
+      <p class="text-nx-mut2 text-sm mt-2 leading-relaxed">Wir bauen eine individuelle Demo-App — Sie sehen das Ergebnis, bevor Sie entscheiden.</p>
+    </div>
+    <div>
+      <div class="font-display font-extrabold text-5xl text-grad">03</div>
+      <h3 class="font-display font-bold text-lg mt-2">Umsetzung</h3>
+      <p class="text-nx-mut2 text-sm mt-2 leading-relaxed">Wir entwickeln, testen und bringen Ihre App in den App&nbsp;Store & Play&nbsp;Store.</p>
+    </div>
+    <div>
+      <div class="font-display font-extrabold text-5xl text-grad">04</div>
+      <h3 class="font-display font-bold text-lg mt-2">Launch &amp; Betreuung</h3>
+      <p class="text-nx-mut2 text-sm mt-2 leading-relaxed">Wir begleiten Betrieb, Updates und Weiterentwicklung — dauerhaft an Ihrer Seite.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== REFERENZEN (Platzhalter) ===================== -->
+<section class="bg-nx-bg2 border-y border-nx-line">
+  <div class="max-w-5xl mx-auto px-5 py-16 text-center">
+    <span class="text-xs font-semibold uppercase tracking-widest text-brand-600">Referenzen</span>
+    <blockquote class="font-display font-semibold text-2xl md:text-3xl leading-snug mt-5 max-w-3xl mx-auto text-white">
+      „Hier steht in Kürze ein echtes Kundenzitat — der Moment, in dem ein skeptischer Inhaber zum Fürsprecher wird.“
+    </blockquote>
+    <p class="text-nx-mut mt-5 text-sm">Platzhalter — echtes Testimonial &amp; Logos folgen.</p>
+    <div class="flex flex-wrap justify-center items-center gap-x-10 gap-y-4 mt-9 opacity-50">
+      <div class="h-7 w-24 rounded bg-nx-surf2"></div>
+      <div class="h-7 w-28 rounded bg-nx-surf2"></div>
+      <div class="h-7 w-20 rounded bg-nx-surf2"></div>
+      <div class="h-7 w-24 rounded bg-nx-surf2"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== KONTAKT / CTA ===================== -->
+<section id="kontakt" class="max-w-6xl mx-auto px-5 py-16 md:py-24">
+  <div class="relative rounded-3xl nx-card p-9 md:p-14 text-center overflow-hidden">
+    <div class="nx-glow w-80 h-80 -top-24 right-0" style="background:rgba(63,109,255,.3)"></div>
+    <div class="nx-glow w-72 h-72 -bottom-24 left-0" style="background:rgba(40,215,238,.2)"></div>
+    <h2 class="font-display font-extrabold text-3xl md:text-4xl tracking-tight relative text-white">Lassen Sie uns Ihre App besprechen</h2>
+    <p class="text-nx-mut2 mt-4 text-lg max-w-xl mx-auto relative">Kostenloses, unverbindliches Erstgespräch. Sie sehen eine individuelle Demo — und entscheiden völlig frei.</p>
+    <div class="flex flex-wrap justify-center gap-3 mt-8 relative">
+      <a href="mailto:info@nexovest-consulting.de" class="nx-btn font-semibold px-6 py-3.5 rounded-full transition">info@nexovest-consulting.de</a>
+      <a href="tel:+4917661060971" class="border border-nx-line text-white font-semibold px-6 py-3.5 rounded-full hover:bg-nx-surf2 transition">+49&nbsp;176&nbsp;61060971</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="border-t border-nx-line">
+  <div class="max-w-6xl mx-auto px-5 py-12 grid md:grid-cols-3 gap-8 text-sm">
+    <div>
+      <div class="flex items-center gap-2.5">
+        <span class="w-8 h-8 rounded-xl bg-brand-600 text-white grid place-items-center font-display font-extrabold">N</span>
+        <span class="font-display font-extrabold text-lg">Nexovest Consulting</span>
+      </div>
+      <p class="text-nx-mut mt-3 leading-relaxed">Apps, Webseiten & digitale Strategie — anbieterunabhängig und persönlich aus Hannover.</p>
+    </div>
+    <div class="text-nx-mut2">
+      <h4 class="font-semibold text-white">Kontakt</h4>
+      <p class="mt-3 leading-relaxed">
+        Modersohn-Becker-Weg 10<br>30855 Langenhagen<br>
+        <a href="mailto:info@nexovest-consulting.de" class="hover:text-brand-600">info@nexovest-consulting.de</a><br>
+        <a href="tel:+4917661060971" class="hover:text-brand-600">+49 176 61060971</a>
+      </p>
+    </div>
+    <div class="text-nx-mut2">
+      <h4 class="font-semibold text-white">Rechtliches</h4>
+      <p class="mt-3 leading-relaxed">
+        <a href="#" class="hover:text-brand-600 block">Impressum</a>
+        <a href="#" class="hover:text-brand-600 block mt-1">Datenschutz</a>
+      </p>
+    </div>
+  </div>
+  <div class="border-t border-nx-line py-5 text-center text-xs text-nx-mut">© 2026 Nexovest Consulting · Alle Rechte vorbehalten</div>
+</footer>
+
+<!-- ===================== TEMPLATES für die Mockup-Screens ===================== -->
+<template id="tpl-restaurant">
+  <!-- SCENE 0 — VENUE HOME (Wolt/Uber-Eats class) -->
+  <div class="scene" data-scene="0">
+    <div class="rapp">
+      <div class="r-cover">
+        <img src="assets/food/pizza1.jpg" alt="" onerror="this.outerHTML='<div class=imgfb>TM</div>'">
+        <div class="scrim"></div>
+        <div class="sbar" style="color:#fff;position:absolute;top:0;left:0;right:0;z-index:5"><span>9:41</span><span class="dots"><b></b><b></b><b></b><span class="bat"></span></span></div>
+        <div class="r-glass"><span class="r-gbtn">__BACK__</span><span class="r-gbtn">__HEART__</span></div>
+      </div>
+      <div class="r-id">
+        <div class="top">
+          <span class="r-logo">TM</span>
+          <div><h2>Trattoria da Marco</h2><div class="tag">Cucina Italiana · seit 1998</div></div>
+        </div>
+        <div class="r-meta">
+          <span class="star">__STAR__ 4,8</span><span class="mut">(320)</span>
+          <span class="dot">·</span><span class="ic">__CLOCK__ 25–35 Min</span>
+          <span class="dot">·</span><span class="ic">__SCOOTER__ 1,90 €</span>
+        </div>
+      </div>
+      <div class="r-seg"><span class="on">Lieferung</span><span>Abholung</span></div>
+      <div class="r-nudge"><span class="track"><i></i></span>Noch 8,00 € bis zur kostenlosen Lieferung</div>
+      <div class="r-body">
+        <div class="r-ovl"><span class="fl">__FLAME__</span> Am beliebtesten <span class="more">Alle ›</span></div>
+        <div class="r-caro">
+          <div class="r-pc"><div class="ph"><img src="assets/food/pizza2.jpg" onerror="this.outerHTML='<div class=imgfb>P</div>'"><span class="bs">Bestseller</span><span class="add">__PLUS__</span></div><h4>Pizza Diavola</h4><div class="pr">12,90 €</div></div>
+          <div class="r-pc"><div class="ph"><img src="assets/food/pasta1.jpg" onerror="this.outerHTML='<div class=imgfb>T</div>'"><span class="add">__PLUS__</span></div><h4>Tagliatelle Tartufo</h4><div class="pr">16,50 €</div></div>
+          <div class="r-pc"><div class="ph"><img src="assets/food/seafood1.jpg" onerror="this.outerHTML='<div class=imgfb>G</div>'"><span class="add">__PLUS__</span></div><h4>Gamberoni</h4><div class="pr">18,00 €</div></div>
+        </div>
+        <div class="r-tabs"><span class="r-tab on">Beliebt</span><span class="r-tab">Pizza</span><span class="r-tab">Pasta</span><span class="r-tab">Antipasti</span><span class="r-tab">Dolci</span></div>
+        <div class="r-menu">
+          <div class="r-mh">Pizza</div>
+          <div class="r-mc">
+            <div class="txt">
+              <div class="nm">Pizza Tartufo e Funghi</div>
+              <div class="tg"><span class="r-t2 pop">__SPARK__ Beliebt</span><span class="r-t2 veg">Vegetarisch</span></div>
+              <div class="ds">Steinofen, Trüffelcreme, Champignons, Mozzarella di Bufala, Rucola.</div>
+              <div class="pr">14,90 €</div>
+            </div>
+            <div class="thumb"><img src="assets/food/pizza3.jpg" onerror="this.outerHTML='<div class=imgfb>P</div>'"><span class="add" data-tap="go">__PLUS__</span></div>
+          </div>
+          <div class="r-mc">
+            <div class="txt">
+              <div class="nm">Pizza Diavola</div>
+              <div class="tg"><span class="r-t2 spi">__FLAME__ Scharf</span></div>
+              <div class="ds">Scharfe Salami, Peperoni, San-Marzano-Tomaten, Mozzarella.</div>
+              <div class="pr">12,90 €</div>
+            </div>
+            <div class="thumb"><img src="assets/food/pizza2.jpg" onerror="this.outerHTML='<div class=imgfb>D</div>'"><span class="add">__PLUS__</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="r-nav">
+        <span class="it on">__HOME__ Start</span>
+        <span class="it">__SEARCH2__ Suche</span>
+        <span class="it">__BAG__ Korb</span>
+        <span class="it">__USER__ Profil</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENE 1 — DISH DETAIL (customization sheet) -->
+  <div class="scene" data-scene="1">
+    <div class="rapp">
+      <div class="r-dhero">
+        <img src="assets/food/pizza3.jpg" onerror="this.outerHTML='<div class=imgfb>TM</div>'">
+        <div class="scrim"></div>
+        <div class="sbar" style="color:#fff;position:absolute;top:0;left:0;right:0;z-index:3"><span>9:41</span><span class="dots"><b></b><b></b><b></b><span class="bat"></span></span></div>
+        <div class="handle"></div>
+        <span class="x">__X__</span>
+      </div>
+      <div class="r-dsheet">
+        <div class="nm">Pizza Tartufo e Funghi</div>
+        <div class="r-dtags"><span class="r-t2 pop">__SPARK__ Beliebt</span><span class="r-t2 veg">Vegetarisch</span><span class="r-t2 spi">__FLAME__ Scharf</span></div>
+        <div class="r-desc">Steinofenpizza mit Trüffelcreme, Champignons, Mozzarella di Bufala und frischem Rucola.</div>
+        <div class="r-allerg">__INFO__ Enthält: Gluten, Milch · 980 kcal <span class="s">__STAR__ 4,7 (84)</span></div>
+        <div class="r-grp">
+          <div class="gh">Größe <span class="req">Erforderlich</span></div>
+          <div class="r-opt sel"><span class="r-radio"></span>Mittel (30 cm)<span class="pr">14,90 €</span></div>
+          <div class="r-opt"><span class="r-radio"></span>Groß (40 cm)<span class="pr">+4,00 €</span></div>
+        </div>
+        <div class="r-grp">
+          <div class="gh">Extras <span class="opt">Optional</span></div>
+          <div class="r-opt sel"><span class="r-chk">__CHECKW__</span>Extra Mozzarella<span class="pr">+1,50 €</span></div>
+          <div class="r-opt"><span class="r-chk"></span>Trüffelöl<span class="pr">+2,50 €</span></div>
+        </div>
+        <div class="r-note">Besondere Wünsche · z. B. „ohne Zwiebeln, gut durchgebacken …“</div>
+      </div>
+      <div class="r-cta">
+        <div class="r-qty"><span class="qb">__MINUS__</span><span class="n">1</span><span class="qb">__PLUS__</span></div>
+        <div class="r-addbtn" data-tap="go"><span>Hinzufügen</span><span>16,40 €</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENE 2 — CHECKOUT -->
+  <div class="scene" data-scene="2">
+    <div class="rapp">
+      <div class="sbar" style="color:var(--fg)"><span>9:41</span><span class="dots"><b></b><b></b><b></b><span class="bat"></span></span></div>
+      <div class="r-cohdr"><span class="bk">__BACK__</span><div><h2>Warenkorb</h2><div class="sub">Trattoria da Marco · Lieferung</div></div></div>
+      <div class="r-cobody">
+        <div class="r-block">
+          <div class="r-li"><div class="th"><img src="assets/food/pizza3.jpg" onerror="this.outerHTML='<div class=imgfb>P</div>'"></div><div><div class="nm">Pizza Tartufo e Funghi</div><div class="o">Mittel · Extra Mozzarella</div></div><div class="pr">16,40 €</div></div>
+          <div class="r-li"><div class="th"><img src="assets/food/pasta1.jpg" onerror="this.outerHTML='<div class=imgfb>T</div>'"></div><div><div class="nm">Tagliatelle Tartufo</div><div class="o">1× Portion</div></div><div class="pr">16,50 €</div></div>
+        </div>
+        <div class="r-block">
+          <div class="r-mapline">
+            <div class="mini"><svg viewBox="0 0 54 46" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><rect width="54" height="46" fill="#e6ecf0"/><g stroke="#d2dbe2" stroke-width="3"><path d="M0 17h54M0 33h54M22 0v46M40 0v46"/></g><path d="M8 38 22 17 38 28" fill="none" stroke="var(--p)" stroke-width="3" stroke-linecap="round"/><circle cx="38" cy="28" r="4.5" fill="var(--p)"/></svg></div>
+            <div class="ad">Musterstraße 12<small>10115 Berlin · 2. OG</small></div><span class="chg">Ändern</span>
+          </div>
+          <div class="r-vouch"><div class="ap">__TAG__ WELCOME5 angewendet · −5,00 €<span class="x">__X__</span></div></div>
+          <div class="r-tip"><span>1 €</span><span class="on">2 €</span><span>3 €</span><span>Andere</span></div>
+          <div class="r-fees">
+            <div class="r"><span>Zwischensumme</span><span>32,90 €</span></div>
+            <div class="r"><span>Liefergebühr</span><span>1,90 €</span></div>
+            <div class="r"><span>Servicegebühr</span><span>0,99 €</span></div>
+            <div class="r"><span>Trinkgeld Fahrer</span><span>2,00 €</span></div>
+            <div class="r disc"><span>Rabatt WELCOME5</span><span>−5,00 €</span></div>
+            <div class="r tot"><span>Gesamt</span><span>32,79 €</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="r-pay">
+        <div class="r-applepay">__APPLE__ Pay</div>
+        <div class="r-orderbtn" data-tap="go"><span>Jetzt bestellen</span><span>32,79 €</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENE 3 — LIVE TRACKING -->
+  <div class="scene" data-scene="3">
+    <div class="rapp">
+      <div class="r-trmap">
+        <svg class="mapsvg" viewBox="0 0 290 256" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <g stroke="#cfd8df" stroke-width="6" stroke-linecap="round"><path d="M-10 70H300"/><path d="M-10 150H300"/><path d="M-10 220H300"/><path d="M60 -10V270"/><path d="M170 -10V270"/><path d="M240 -10V270"/></g>
+          <g stroke="#e7edf1" stroke-width="2"><path d="M-10 110H300"/><path d="M-10 192H300"/><path d="M112 -10V270"/></g>
+          <path d="M48 56 C 120 72, 128 150, 200 176" fill="none" stroke="var(--p)" stroke-width="4" stroke-linecap="round"/>
+          <g transform="translate(48,56)"><circle r="11" fill="#fff"/><circle r="8" fill="var(--p)"/></g>
+          <g transform="translate(130,120)"><circle r="13" fill="#fff" stroke="var(--p)" stroke-width="2"/><circle r="9" fill="var(--p)"/></g>
+          <g transform="translate(200,176)"><circle r="11" fill="var(--fg)"/><circle cx="0" cy="-1" r="3.6" fill="#fff"/></g>
+        </svg>
+        <div class="sbar" style="color:#33404a;position:absolute;top:0;left:0;right:0;z-index:3"><span>9:41</span><span class="dots"><b></b><b></b><b></b><span class="bat"></span></span></div>
+      </div>
+      <div class="r-trsheet">
+        <div class="r-eta">Ankunft 18:42 <span class="pill"><span class="r-livedot"></span> In der Küche</span></div>
+        <div class="r-etasub">Voraussichtlich in 22 Minuten</div>
+        <div class="r-steps">
+          <div class="r-step done"><div class="d">__CHECK__</div><div class="l">Bestätigt</div></div>
+          <div class="r-step cur"><div class="d">__FLAME__</div><div class="l">Zubereitung</div></div>
+          <div class="r-step"><div class="d">__SCOOTER__</div><div class="l">Unterwegs</div></div>
+          <div class="r-step"><div class="d">__HOME__</div><div class="l">Geliefert</div></div>
+        </div>
+        <div class="r-courier">
+          <div class="av"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80&fit=crop&crop=faces" onerror="this.parentNode.textContent='L'"></div>
+          <div><div class="nm">Luca bringt dein Essen</div><div class="rt"><span class="s">__STAR__</span> 4,9 · per Vespa</div></div>
+          <div class="acts"><span class="r-cact">__PHONE__</span><span class="r-cact">__CHAT__</span></div>
+        </div>
+        <div class="r-osum">__BAG__ Trattoria da Marco · 2 Artikel<span class="o">#NX-4821</span></div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="tpl-friseur">
+  <!-- SCENE 0 — SALON PROFILE -->
+  <div class="scene" data-scene="0">
+    <div class="fapp">
+      <div class="f-gal">
+        <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&q=80" onerror="this.outerHTML='<div class=imgfb>ML</div>'">
+        <div class="scrim"></div>
+        <div class="sbar" style="color:#fff;position:absolute;top:0;left:0;right:0;z-index:5"><span>9:41</span><span class="dots"><b></b><b></b><b></b><span class="bat"></span></span></div>
+        <div class="f-glass"><span class="f-gbtn">__BACK__</span><span class="f-gbtn">__HEART__</span></div>
+        <span class="f-count">1 / 6</span>
+        <div class="f-pdots"><b class="on"></b><b></b><b></b><b></b><b></b><b></b></div>
+      </div>
+      <div class="f-id">
+        <h2>Maison Lumière</h2>
+        <div class="sub">Hair · Color · Styling · Hannover-Mitte</div>
+        <div class="rate"><span class="star">__STAR__</span> <b>4,9</b> <span class="mut">· 312 Bewertungen · €€</span></div>
+        <div class="f-status"><span class="f-pill open"><span class="d"></span>Geöffnet bis 20:00</span><span class="f-pill free">Heute noch 3 frei</span></div>
+      </div>
+      <div class="f-body">
+        <div class="f-sec">Unsere Stylisten</div>
+        <div class="f-team">
+          <div class="f-st"><div class="av"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&q=80&fit=crop&crop=faces" onerror="this.parentNode.textContent='L'"></div><div class="nm">Lena</div><div class="ro">Senior</div><div class="rt">★ 4,9</div></div>
+          <div class="f-st"><div class="av"><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=120&q=80&fit=crop&crop=faces" onerror="this.parentNode.textContent='M'"></div><div class="nm">Mara</div><div class="ro">Color</div><div class="rt">★ 5,0</div></div>
+          <div class="f-st"><div class="av"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&q=80&fit=crop&crop=faces" onerror="this.parentNode.textContent='T'"></div><div class="nm">Tom</div><div class="ro">Barbier</div><div class="rt">★ 4,8</div></div>
+        </div>
+        <div class="f-sec" style="margin-bottom:0">Beliebte Services</div>
+        <div class="f-svc"><div class="th"><img src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=160&q=80" onerror="this.style.display='none'"></div><div class="info"><div class="nm">Damen Schnitt &amp; Föhnen</div><div class="mt">__CLOCK__ 60 Min · mit Lena</div></div><div class="rt"><div class="pr">€ 75</div><span class="tog">__PLUS__</span></div></div>
+      </div>
+      <div class="f-cta" data-tap="go">Termin buchen __CHEV__</div>
+      <div class="f-nav"><span class="it on">__SEARCH2__ Entdecken</span><span class="it">__CAL__ Termine</span><span class="it">__HEART__ Favoriten</span><span class="it">__USER__ Profil</span></div>
+    </div>
+  </div>
+
+  <!-- SCENE 1 — SERVICE & STYLIST -->
+  <div class="scene" data-scene="1">
+    <div class="fapp">
+      <div class="sbar" style="color:var(--fg)"><span>9:41</span><span class="dots"><b></b><b></b><b></b><span class="bat"></span></span></div>
+      <div class="f-sub"><span class="f-bk">__BACK__</span><h3>Service wählen</h3></div>
+      <div class="f-segr"><span class="on">Damen</span><span>Herren</span><span>Kinder</span></div>
+      <div class="f-body">
+        <div class="f-cat"><h4>Schnitt &amp; Styling</h4><span class="ct">4 Services</span></div>
+        <div class="f-svc sel"><div class="info"><div class="nm">Schnitt &amp; Föhnen</div><div class="ds">Inkl. Beratung &amp; Styling</div><div class="mt">__CLOCK__ 60 Min · mit Lena</div></div><div class="rt"><div class="pr">€ 75</div><span class="tog">__CHECK__</span></div></div>
+        <div class="f-svc"><div class="info"><div class="nm">Balayage &amp; Toner</div><div class="mt"><span class="tag">Beliebt</span> · __CLOCK__ 120 Min</div></div><div class="rt"><div class="pr">ab € 145</div><span class="tog">__PLUS__</span></div></div>
+        <div class="f-cat" style="padding-top:8px"><h4>Mit wem?</h4></div>
+        <div class="f-team" style="padding-bottom:6px">
+          <div class="f-st"><div class="av">__USER__</div><div class="nm">Egal</div><div class="ro">Erste/r frei</div></div>
+          <div class="f-st sel"><div class="av"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&q=80&fit=crop&crop=faces" onerror="this.parentNode.textContent='L'"></div><div class="nm">Lena</div><div class="rt">★ 4,9</div></div>
+          <div class="f-st"><div class="av"><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=120&q=80&fit=crop&crop=faces" onerror="this.parentNode.textContent='M'"></div><div class="nm">Mara</div><div class="rt">★ 5,0</div></div>
+        </div>
+      </div>
+      <div class="f-bar"><div class="sum"><div class="s">1 Service · 60 Min</div><div class="t">€ 75</div></div><div class="go" data-tap="go">Weiter zur Zeit __CHEV__</div></div>
+    </div>
+  </div>
+
+  <!-- SCENE 2 — DATE & TIME -->
+  <div class="scene" data-scene="2">
+    <div class="fapp">
+      <div class="sbar" style="color:var(--fg)"><span>9:41</span><span class="dots"><b></b><b></b><b></b><span class="bat"></span></span></div>
+      <div class="f-sub"><span class="f-bk">__BACK__</span><h3>Wann passt es dir?</h3></div>
+      <div class="f-recap"><div class="th"><img src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=80&q=80" onerror="this.style.display='none'"></div>Schnitt &amp; Föhnen · 60 Min · mit Lena</div>
+      <div class="f-days">
+        <div class="f-day"><div class="wd">Di</div><div class="dt">17</div></div>
+        <div class="f-day on"><div class="wd">Mi</div><div class="dt">18</div></div>
+        <div class="f-day"><div class="wd">Do</div><div class="dt">19</div></div>
+        <div class="f-day off"><div class="wd">Fr</div><div class="dt">20</div></div>
+        <div class="f-day"><div class="wd">Sa</div><div class="dt">21</div></div>
+      </div>
+      <div class="f-helper">__CLOCK__ Frühester Termin: Mi, 18.6. um 10:30 →</div>
+      <div class="f-tod">Vormittag</div>
+      <div class="f-slots">
+        <span class="f-slot">09:00</span><span class="f-slot on">10:30</span><span class="f-slot off">11:00</span>
+        <span class="f-slot">11:30</span><span class="f-slot off">12:00</span><span class="f-slot">12:30</span>
+      </div>
+      <div class="f-bar"><div class="sum"><div class="s">Mi, 18. Juni</div><div class="t" style="font-size:16px">10:30 Uhr</div></div><div class="go" data-tap="go">Termin bestätigen</div></div>
+    </div>
+  </div>
+
+  <!-- SCENE 3 — CONFIRMATION TICKET -->
+  <div class="scene" data-scene="3">
+    <div class="fapp">
+      <div class="sbar" style="color:var(--fg)"><span>9:41</span><span class="dots"><b></b><b></b><b></b><span class="bat"></span></span></div>
+      <div class="f-conf">
+        <div class="f-crest"><div class="r">__CHECK__</div></div>
+        <h3>Termin bestätigt</h3>
+        <p>Wir freuen uns auf dich · Buchung #ML-4821</p>
+        <div class="f-ticket">
+          <div class="top">
+            <div class="f-tk-sal"><div class="av"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80&fit=crop&crop=faces" onerror="this.parentNode.textContent='L'"></div><div><div class="nm">Maison Lumière</div><div class="ro">mit Lena · Senior Stylistin</div></div></div>
+            <div class="f-tk-svc"><span>Schnitt &amp; Föhnen · 60 Min</span><span class="pr">€ 75</span></div>
+            <div class="f-tk-date">Mi, 18. Juni · 10:30</div>
+          </div>
+          <div class="f-perf"></div>
+          <div class="f-tk-qr"><span class="qr">__QR2__</span><div class="lb">Beim Salon vorzeigen<small>Code · ML-4821</small></div></div>
+        </div>
+        <div class="f-policy">Anzahlung € 15 bezahlt · Rest € 60 vor Ort · kostenlose Stornierung bis 24 Std vorher</div>
+        <div class="f-acts"><span class="f-act">__CAL__ Kalender</span><span class="f-act">__PIN__ Route</span><span class="f-act">__CHEV__ Verwalten</span></div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="tpl-fitness">
+  <!-- SCENE 0 — HOME FEED -->
+  <div class="scene" data-scene="0">
+    <div class="gapp">
+      <div class="sbar" style="color:var(--fg)"><span>9:41</span><span class="dots"><b></b><b></b><b></b><span class="bat"></span></span></div>
+      <div class="g-head">
+        <div class="greet"><div class="gt">Guten Abend, Lukas</div><div class="gs">Diese Woche: 3 von 4 Trainings</div></div>
+        <div class="g-ring"><div class="av"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80&fit=crop&crop=faces" onerror="this.style.display='none'"></div></div>
+      </div>
+      <div class="g-mem">
+        <div><div class="lbl">Premium</div><div class="who">Lukas Meyer</div></div>
+        <div class="prog"><div class="bar"><i></i></div><div class="vt">8 von 12 Besuchen · <b>4 übrig</b></div></div>
+        <div class="qr">__QR__<span>Scan</span></div>
+      </div>
+      <div class="g-body">
+        <div class="g-ovl">Heute gebucht</div>
+        <div class="g-hero" data-tap="go">
+          <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&q=80" onerror="this.style.display='none'">
+          <div class="scrim"></div>
+          <span class="badge"><span class="ld"></span>GEBUCHT · 17:30</span>
+          <div class="foot"><div class="nm">Power Yoga Flow</div><div class="met"><span class="av"><img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&q=80&fit=crop&crop=faces" onerror="this.style.display='none'"></span>mit Sarah K. · beginnt in 47 Min</div></div>
+        </div>
+        <div class="g-ovl" style="margin-top:14px">Heute noch frei <span class="more">Alle ›</span></div>
+        <div class="g-rail">
+          <div class="g-cc"><div class="ph"><img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=80" onerror="this.style.display='none'"><div class="scr"></div><span class="tm">18:45</span></div><div class="meta"><div class="nm">HIIT Burn</div><div class="in">mit Marco · Studio 1</div><div class="g-cap"><div class="dts"><b class="on"></b><b class="on"></b><b class="on"></b><b></b><b></b></div><span class="lab warn">Nur 2 frei</span></div></div></div>
+          <div class="g-cc"><div class="ph"><img src="https://images.unsplash.com/photo-1534258936925-c58bed479fcb?w=400&q=80" onerror="this.style.display='none'"><div class="scr"></div><span class="tm">20:00</span></div><div class="meta"><div class="nm">Spinning</div><div class="in">mit Jens · Cycle</div><div class="g-cap"><div class="dts"><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b></div><span class="lab full">Voll</span></div></div></div>
+        </div>
+      </div>
+      <div class="g-nav"><span class="it on">__HOME__ Start</span><span class="it">__CLOCK2__ Kurse</span><span class="it"><span class="ci">__QR__ Check-in</span></span><span class="it">__USER__ Profil</span></div>
+    </div>
+  </div>
+
+  <!-- SCENE 1 — CLASS DETAIL -->
+  <div class="scene" data-scene="1">
+    <div class="gapp">
+      <div class="g-dhero">
+        <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&q=80" onerror="this.style.display='none'">
+        <div class="scrim"></div>
+        <div class="sbar" style="color:#fff;position:absolute;top:0;left:0;right:0;z-index:4"><span>9:41</span><span class="dots"><b></b><b></b><b></b><span class="bat"></span></span></div>
+        <div class="g-dtop"><span class="g-dbtn">__BACK__</span><span class="g-dbtn">__HEART__</span></div>
+        <div class="foot"><div class="nm">Power Yoga Flow</div><div class="chips"><span class="g-chip">60 Min</span><span class="g-chip">Mittel</span><span class="g-chip">Studio 2</span></div></div>
+      </div>
+      <div class="g-dbody">
+        <div class="g-soc"><div class="rt"><span class="s">__STAR__</span> 4,9</div><div class="rv">· 218 Bewertungen</div><div class="avs"><span><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=60&q=80&fit=crop&crop=faces" onerror="this.parentNode.style.background='#3a3f4a'"></span><span><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=60&q=80&fit=crop&crop=faces" onerror="this.parentNode.style.background='#3a3f4a'"></span><span><img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=60&q=80&fit=crop&crop=faces" onerror="this.parentNode.style.background='#3a3f4a'"></span><span class="pl">+40 gebucht</span></div></div>
+        <div class="g-inst"><div class="av"><img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&q=80&fit=crop&crop=faces" onerror="this.parentNode.style.background='#2a2f38'"></div><div><div class="nm">Sarah K.</div><div class="ro">Yoga &amp; Mobility · 6 Jahre Erfahrung</div></div><span class="fol">Folgen</span></div>
+        <div class="g-feat"><span>__CHECK__ Matte gestellt</span><span>Für Einsteiger</span><span>Ruhiges Tempo</span></div>
+      </div>
+      <div class="g-cta"><div class="info"><div class="s">Im Abo enthalten</div><div class="t">0 € · Premium</div></div><div class="go" data-tap="go">Termin wählen __CHEV__</div></div>
+    </div>
+  </div>
+
+  <!-- SCENE 2 — TIME PICKER -->
+  <div class="scene" data-scene="2">
+    <div class="gapp">
+      <div class="sbar" style="color:var(--fg)"><span>9:41</span><span class="dots"><b></b><b></b><b></b><span class="bat"></span></span></div>
+      <div class="g-sub"><span class="g-bk">__BACK__</span><h3>Power Yoga Flow</h3></div>
+      <div class="g-days">
+        <div class="g-day"><div class="wd">Mo</div><div class="dt">16</div></div>
+        <div class="g-day on"><div class="wd">Di</div><div class="dt">17</div></div>
+        <div class="g-day"><div class="wd">Mi</div><div class="dt">18</div></div>
+        <div class="g-day"><div class="wd">Do</div><div class="dt">19</div></div>
+        <div class="g-day"><div class="wd">Fr</div><div class="dt">20</div></div>
+      </div>
+      <div class="g-body">
+        <div class="g-slot on"><div class="tm"><b>17:30</b><span>60 Min</span></div><div class="info"><div class="nm">Power Yoga Flow</div><div class="in">Sarah K. · Studio 2</div></div><div class="g-cap"><span class="lab ok">4 frei</span></div></div>
+        <div class="g-slot"><div class="tm"><b>19:00</b><span>60 Min</span></div><div class="info"><div class="nm">Power Yoga Flow</div><div class="in">Sarah K. · Studio 2</div></div><div class="g-cap"><span class="lab warn">Nur 2 frei</span></div></div>
+        <div class="g-toggle">__BELL__ Erinnerung 1 Std vorher<span class="g-sw"></span></div>
+      </div>
+      <div class="g-rbar"><div class="sum">Di 17.06 · 17:30<small>Studio 2 · mit Sarah K.</small></div><div class="go" data-tap="go">Platz reservieren</div></div>
+    </div>
+  </div>
+
+  <!-- SCENE 3 — CONFIRMATION + QR -->
+  <div class="scene" data-scene="3">
+    <div class="gapp">
+      <div class="sbar" style="color:var(--fg)"><span>9:41</span><span class="dots"><b></b><b></b><b></b><span class="bat"></span></span></div>
+      <div class="g-conf">
+        <div class="g-crest"><div class="r"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12 5 5 11-11"/></svg></div></div>
+        <h3>Platz reserviert!</h3>
+        <p>Wir sehen uns am Dienstag, 17. Juni.</p>
+        <div class="g-tk">
+          <div class="top"><div class="ph"><img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=120&q=80" onerror="this.parentNode.style.background='#222'"></div><div><div class="nm">Power Yoga Flow</div><div class="in">Di 17.06 · 17:30 · 60 Min · Sarah K.</div></div></div>
+          <div class="g-perf"></div>
+          <div class="qrb"><span class="qr">__QR2__</span><div class="lb">Am Eingang scannen<small>Code · PF-2K9</small></div></div>
+        </div>
+        <div class="g-foot"><span class="g-fb ghost">Fertig</span><span class="g-fb solid">Weitere Kurse</span></div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="tpl-kosmetik">
+  <!-- SCENE 0 — STUDIO HOME -->
+  <div class="scene" data-scene="0">
+    <div class="bapp">
+      <div class="b-cover">
+        <img src="https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=600&q=80" onerror="this.style.display='none'">
+        <div class="scrim"></div>
+        <div class="sbar" style="color:#fff;position:absolute;top:0;left:0;right:0;z-index:5"><span>9:41</span><span class="dots"><b></b><b></b><b></b><span class="bat"></span></span></div>
+        <div class="b-glass"><span class="b-gbtn">__BACK__</span><span class="b-gbtn">__HEART__</span></div>
+        <span class="b-logo">LB</span>
+      </div>
+      <div class="b-idc">
+        <h2>Studio Lumière</h2>
+        <div class="sub">Nageldesign &amp; Hautpflege · Hannover-Mitte</div>
+        <div class="b-rate"><span class="big">4,9</span><span class="st">★★★★★</span><span class="mut">· 312 Bewertungen</span></div>
+      </div>
+      <div class="b-body">
+        <div class="b-eye">Galerie</div>
+        <div class="b-look">
+          <div class="b-lk"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=300&q=80" onerror="this.style.display='none'"><span class="cap">Chrome French</span></div>
+          <div class="b-lk"><img src="https://images.unsplash.com/photo-1620331317314-7ddb0e8f86f6?w=300&q=80" onerror="this.style.display='none'"><span class="cap">Glow Facial</span></div>
+          <div class="b-lk"><img src="https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=300&q=80" onerror="this.style.display='none'"><span class="cap">Nude Art</span></div>
+        </div>
+        <div class="b-eye" style="margin-top:14px">Behandlungen</div>
+        <div class="b-tr"><div class="th"><img src="https://images.unsplash.com/photo-1519014816548-bf5fe059798b?w=160&q=80" onerror="this.style.display='none'"></div><div class="info"><div class="nm">Gel-Maniküre Deluxe</div><div class="mt">__CLOCK__ 75 Min · <span class="tag">★ Beliebt</span></div></div><span class="pr">ab 49 €</span></div>
+      </div>
+      <div class="b-cta" data-tap="go">Termin wählen __CHEV__</div>
+    </div>
+  </div>
+
+  <!-- SCENE 1 — TREATMENT DETAIL (before/after) -->
+  <div class="scene" data-scene="1">
+    <div class="bapp">
+      <div class="b-ba">
+        <img src="https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=600&q=80" onerror="this.style.display='none'">
+        <img class="after" src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&q=80" onerror="this.style.display='none'">
+        <div class="divider"></div>
+        <div class="handle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 7-4 5 4 5M16 7l4 5-4 5"/></svg></div>
+        <span class="lbl bf">Vorher</span><span class="lbl af">Nachher</span>
+        <div class="sbar" style="color:#fff;position:absolute;top:0;left:0;right:0;z-index:3"><span>9:41</span><span class="dots"><b></b><b></b><b></b><span class="bat"></span></span></div>
+        <span class="x">__X__</span>
+      </div>
+      <div class="b-dsheet">
+        <div class="nm">Gel-Maniküre Deluxe</div>
+        <div class="b-dmeta">__CLOCK__ 75 Min · <span class="s">__STAR__</span> 4,9 (128) <span class="pr">ab 49 €</span></div>
+        <div class="b-vg">Länge &amp; Finish</div>
+        <div class="b-vars">
+          <div class="b-var sel">Natur<span class="px">+0 €</span></div>
+          <div class="b-var">Medium<span class="px">+8 €</span></div>
+          <div class="b-var">XL<span class="px">+15 €</span></div>
+          <div class="b-var">Chrome<span class="px">+12 €</span></div>
+        </div>
+        <div class="b-vg">Extras hinzufügen</div>
+        <div class="b-addon sel"><span class="chk">__CHECKW__</span>Nageldesign / Art<span class="px">+ 9 €</span></div>
+        <div class="b-addon"><span class="chk"></span>Paraffin-Handbad<span class="px">+ 12 €</span></div>
+      </div>
+      <div class="b-tbar"><div class="sum"><div class="t">Gesamt 67 €</div><small>inkl. 10 € Anzahlung · 90 Min</small></div><div class="go" data-tap="go">Weiter zur Terminwahl</div></div>
+    </div>
+  </div>
+
+  <!-- SCENE 2 — DATE & TIME (reuses .f-*) -->
+  <div class="scene" data-scene="2">
+    <div class="bapp">
+      <div class="sbar" style="color:var(--fg)"><span>9:41</span><span class="dots"><b></b><b></b><b></b><span class="bat"></span></span></div>
+      <div class="f-sub"><span class="f-bk">__BACK__</span><h3>Wähle deinen Termin</h3></div>
+      <div class="f-recap"><div class="th"><img src="https://images.unsplash.com/photo-1519014816548-bf5fe059798b?w=80&q=80" onerror="this.style.display='none'"></div>Gel-Maniküre Deluxe · mit Mara · 90 Min</div>
+      <div class="f-days">
+        <div class="f-day"><div class="wd">Di</div><div class="dt">17</div></div>
+        <div class="f-day on"><div class="wd">Mi</div><div class="dt">18</div></div>
+        <div class="f-day"><div class="wd">Do</div><div class="dt">19</div></div>
+        <div class="f-day off"><div class="wd">Fr</div><div class="dt">20</div></div>
+        <div class="f-day"><div class="wd">Sa</div><div class="dt">21</div></div>
+      </div>
+      <div class="f-helper">__CLOCK__ Frühester Termin: Mi, 18.6. um 10:15 →</div>
+      <div class="f-tod">Vormittag</div>
+      <div class="f-slots">
+        <span class="f-slot">09:30</span><span class="f-slot on">10:15</span><span class="f-slot off">11:00</span>
+        <span class="f-slot">11:45</span><span class="f-slot off">12:30</span><span class="f-slot">13:15</span>
+      </div>
+      <div class="f-bar"><div class="sum"><div class="s">Mi, 18. Juni</div><div class="t" style="font-size:16px">10:15 Uhr</div></div><div class="go" data-tap="go">Termin bestätigen</div></div>
+    </div>
+  </div>
+
+  <!-- SCENE 3 — CONFIRMATION VOUCHER (reuses .f-ticket) -->
+  <div class="scene" data-scene="3">
+    <div class="bapp">
+      <div class="sbar" style="color:var(--fg)"><span>9:41</span><span class="dots"><b></b><b></b><b></b><span class="bat"></span></span></div>
+      <div class="f-conf">
+        <div class="f-crest"><div class="r"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12 5 5 11-11"/></svg></div></div>
+        <h3>Termin bestätigt</h3>
+        <p>Wir freuen uns auf dich, Pavin · #LUM-4821</p>
+        <div class="f-ticket">
+          <div class="top">
+            <div class="f-tk-sal"><div class="av"><img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=80&q=80&fit=crop&crop=faces" onerror="this.parentNode.textContent='M'"></div><div><div class="nm">Studio Lumière</div><div class="ro">Gel-Maniküre · mit Mara</div></div></div>
+            <div class="f-tk-svc"><span>inkl. Nageldesign</span><span class="pr">€ 67</span></div>
+            <div class="f-tk-date">Mi, 18. Juni · 10:15</div>
+          </div>
+          <div class="f-perf"></div>
+          <div class="f-tk-qr"><span class="qr">__QR2__</span><div class="lb">Anzahlung € 10 bezahlt · Rest vor Ort<small>Code · LUM-4821</small></div></div>
+        </div>
+        <div class="b-loy">__SPARK__ Sammle Punkte — deine 5. Maniküre gratis<span class="dts"><b class="on"></b><b class="on"></b><b class="on"></b><b></b><b></b></span></div>
+        <div class="f-acts"><span class="f-act">__CAL__ Kalender</span><span class="f-act">__PIN__ Route</span><span class="f-act">__HEART__ Teilen</span></div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+/* ============================================================
+   Icons (inline SVG, currentColor)
+   ============================================================ */
+const ICON = {
+  home:'M3 10.5 12 3l9 7.5|M5 9.5V21h14V9.5', search:'C', bag:'M6 8h12l-1 12H7L6 8Z|M9 8a3 3 0 0 1 6 0',
+  user:'U', star:'★', clock:'O', pin:'P', heart:'H', back:'m15 5-7 7 7 7', plus:'M12 5v14M5 12h14',
+  minus:'M5 12h14', bell:'M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z|M10 20a2 2 0 0 0 4 0',
+  spark:'S', flame:'F', apple:'A', chev:'m9 6 6 6-6 6', qr:'Q',
+};
+function svg(inner, opts={}) {
+  const f = opts.fill ? `fill="currentColor"` : `fill="none" stroke="currentColor" stroke-width="${opts.sw||1.9}" stroke-linecap="round" stroke-linejoin="round"`;
+  return `<svg width="${opts.s||18}" height="${opts.s||18}" viewBox="0 0 24 24" ${f} xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;
+}
+const I = {
+  STAR: svg('<path d="M12 2.5l2.9 5.9 6.5.95-4.7 4.6 1.1 6.45L12 17.9 6.2 20.95l1.1-6.45-4.7-4.6 6.5-.95L12 2.5Z"/>',{fill:1,s:13}),
+  CLOCK: svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',{s:13}),
+  CLOCK2: svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',{s:21}),
+  SEARCH: svg('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/>',{s:16}),
+  SEARCH2: svg('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/>',{s:21}),
+  HOME: svg('<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/>',{s:21}),
+  BAG: svg('<path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8a3 3 0 0 1 6 0"/>',{s:21}),
+  USER: svg('<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',{s:21}),
+  BELL: svg('<path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z"/><path d="M10 20a2 2 0 0 0 4 0"/>',{s:16}),
+  HEART: svg('<path d="M12 20S3.5 14.5 3.5 8.8A4.3 4.3 0 0 1 12 6a4.3 4.3 0 0 1 8.5 2.8C20.5 14.5 12 20 12 20Z"/>',{s:17}),
+  BACK: svg('<path d="m15 5-7 7 7 7"/>',{s:18}),
+  CHEV: svg('<path d="m9 6 6 6-6 6"/>',{s:18}),
+  PLUS: svg('<path d="M12 5v14M5 12h14"/>',{s:17}),
+  MINUS: svg('<path d="M5 12h14"/>',{s:16}),
+  SPARK: svg('<path d="M12 2l1.8 5.4L19 9l-5.2 1.6L12 16l-1.8-5.4L5 9l5.2-1.6L12 2Z"/>',{fill:1,s:14}),
+  FLAME: svg('<path d="M12 2c1 3-1.5 4.5-1.5 7A2.5 2.5 0 0 0 13 11c.5-1.5 0-2 .5-3 2 1.5 3 3.5 3 5.5a4.5 4.5 0 1 1-9 0c0-3 2.5-4 2.5-6 0-1 .5-2 0-3 .8.2 1.5.7 2 1.5Z"/>',{fill:1,s:14}),
+  APPLE: svg('<path d="M16 8c-1 0-2 .6-3 .6S11 8 10 8c-2 0-4 1.7-4 5 0 3 2 6 3.5 6 .9 0 1.4-.5 2.5-.5s1.6.5 2.5.5C18 19 20 16 20 13c0-2.4-1.3-3.7-2.6-4.3A3 3 0 0 0 16 8Z"/><path d="M13 5c.7-.6 1-1.5 1-2.5-.9.1-1.7.5-2.3 1.1-.5.6-.9 1.4-.8 2.3.9 0 1.6-.4 2.1-.9Z"/>',{fill:1,s:14}),
+  QR: svg('<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v7h-7"/>',{s:14}),
+  QR2: svg('<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v7h-7"/>',{s:21}),
+  CHECK: svg('<path d="m4 12 5 5 11-11"/>',{s:13,sw:2.6}),
+  CHECKW: svg('<path d="m4 12 5 5 11-11"/>',{s:13,sw:2.6}),
+  X: svg('<path d="M6 6l12 12M18 6 6 18"/>',{s:15}),
+  PHONE: svg('<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L20 13l1 4v2a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1Z"/>',{s:16}),
+  CHAT: svg('<path d="M4 5h16v11H8l-4 4V5Z"/>',{s:16}),
+  INFO: svg('<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/>',{s:13}),
+  TAG: svg('<path d="M3 12 12 3h7v7l-9 9-7-7Z"/><circle cx="15.5" cy="8.5" r="1.3" fill="currentColor"/>',{s:14}),
+  PIN: svg('<path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z"/><circle cx="12" cy="10" r="2.5"/>',{s:16}),
+  PINW: svg('<path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z"/><circle cx="12" cy="10" r="2.5"/>',{s:14}),
+  SCOOTER: svg('<circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="18" r="2.4"/><path d="M8.4 18h7M18 16l-3-8h-2M5 11h5l3 5"/>',{s:14}),
+  CAL: svg('<rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 9h16M8 3v4M16 3v4"/>',{s:16}),
+};
+function fillIcons(html) {
+  return html
+    .replace(/__STAR__/g,I.STAR).replace(/__CLOCK2__/g,I.CLOCK2).replace(/__CLOCK__/g,I.CLOCK)
+    .replace(/__SEARCH2__/g,I.SEARCH2).replace(/__SEARCH__/g,I.SEARCH).replace(/__HOME__/g,I.HOME)
+    .replace(/__BAG__/g,I.BAG).replace(/__USER__/g,I.USER).replace(/__BELL__/g,I.BELL)
+    .replace(/__HEART__/g,I.HEART).replace(/__BACK__/g,I.BACK).replace(/__CHEV__/g,I.CHEV)
+    .replace(/__PLUS__/g,I.PLUS).replace(/__MINUS__/g,I.MINUS).replace(/__SPARK__/g,I.SPARK)
+    .replace(/__FLAME__/g,I.FLAME).replace(/__APPLE__/g,I.APPLE).replace(/__QR2__/g,I.QR2).replace(/__QR__/g,I.QR)
+    .replace(/__CHECKW__/g,I.CHECKW).replace(/__CHECK__/g,I.CHECK).replace(/__X__/g,I.X)
+    .replace(/__PHONE__/g,I.PHONE).replace(/__CHAT__/g,I.CHAT).replace(/__INFO__/g,I.INFO)
+    .replace(/__TAG__/g,I.TAG).replace(/__PINW__/g,I.PINW).replace(/__PIN__/g,I.PIN)
+    .replace(/__SCOOTER__/g,I.SCOOTER).replace(/__CAL__/g,I.CAL);
+}
+
+/* ============================================================
+   Mockups befüllen + Scene-Controller
+   ============================================================ */
+const TPL = {
+  restaurant: document.getElementById('tpl-restaurant').innerHTML,
+  friseur:    document.getElementById('tpl-friseur').innerHTML,
+  fitness:    document.getElementById('tpl-fitness').innerHTML,
+  kosmetik:   document.getElementById('tpl-kosmetik').innerHTML,
+};
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Einheitlicher 4-Szenen-Flow: Szene 0–2 tippen das [data-tap="go"]-Element
+// der jeweiligen Szene, Szene 3 verweilt und loopt.
+const GENERIC_FLOW = [
+  { dur: 2900, tap: '[data-tap="go"]' },
+  { dur: 2700, tap: '[data-tap="go"]' },
+  { dur: 2900, tap: '[data-tap="go"]' },
+  { dur: 3200, tap: null },
+];
+document.querySelectorAll('.mock').forEach((mock) => {
+  const kind = [...mock.classList].find(c => TPL[c]);
+  mock.innerHTML = fillIcons(TPL[kind]);
+  if (mock.dataset.flow && mock.dataset.flow !== 'static') initFlow(mock, GENERIC_FLOW);
+  else mock.querySelector('.scene')?.classList.add('active');
+});
+
+function initFlow(mock, flow) {
+  const screen = mock.closest('.screen');
+  const scenes = [...mock.querySelectorAll('.scene')];
+  const tapper = screen.querySelector('.tapper');
+  let i = 0, paused = false, t1, t2, t3;
+
+  // Fortschritts-Dots
+  const dots = document.createElement('div');
+  dots.className = 'dots-ui';
+  dots.innerHTML = scenes.map((_,k)=>`<b data-k="${k}"></b>`).join('');
+  mock.closest('.phone-shell').after(dots);
+  dots.querySelectorAll('b').forEach(b => b.addEventListener('click', () => { jump(+b.dataset.k); }));
+
+  function render() {
+    scenes.forEach((s,k)=>s.classList.toggle('active', k===i));
+    dots.querySelectorAll('b').forEach((b,k)=>b.classList.toggle('on', k===i));
+  }
+  function clearTimers(){ clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); if(tapper) tapper.classList.remove('show','tap'); }
+  function jump(n){ clearTimers(); i = n; render(); if(!paused && !reduced) schedule(); }
+
+  function schedule() {
+    const step = flow[i];
+    if (reduced) return;
+    if (step.tap) {
+      // kurz vor Ende: Tap-Cursor zum Ziel fahren und "tippen"
+      t1 = setTimeout(() => {
+        const el = scenes[i].querySelector(step.tap);
+        if (el && tapper) {
+          const sr = screen.getBoundingClientRect(), er = el.getBoundingClientRect();
+          tapper.style.left = (er.left - sr.left + er.width/2) + 'px';
+          tapper.style.top  = (er.top  - sr.top  + er.height/2) + 'px';
+          tapper.classList.add('show');
+          t2 = setTimeout(()=>tapper.classList.add('tap'), 480);
+        }
+        t3 = setTimeout(() => { if(tapper) tapper.classList.remove('show','tap'); i=(i+1)%scenes.length; render(); schedule(); }, 980);
+      }, step.dur);
+    } else {
+      t1 = setTimeout(() => { i=(i+1)%scenes.length; render(); schedule(); }, step.dur);
+    }
+  }
+
+  // Hover pausiert (Desktop), Klick auf CTA übernimmt
+  const shell = mock.closest('.phone-shell');
+  shell.addEventListener('mouseenter', () => { paused = true; clearTimers(); });
+  shell.addEventListener('mouseleave', () => { paused = false; schedule(); });
+  mock.addEventListener('click', (e) => {
+    const tapEl = e.target.closest('[data-tap]');
+    if (tapEl) { clearTimers(); i=(i+1)%scenes.length; render(); }
+  });
+
+  render();
+  if (!reduced) {
+    // Lazy-Start: erst animieren, wenn sichtbar
+    new IntersectionObserver((ents, obs) => {
+      ents.forEach(ent => { if (ent.isIntersecting) { schedule(); obs.unobserve(mock); } });
+    }, { threshold: .35 }).observe(mock);
+  }
+}
+</script>
+<script id="nx-anim-js">
+(function(){
+  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  function run(){
+    var set=new Set();
+    ['section .text-center','.nx-card','.stage','#loesungen .grid > div','#detail .grid > div','#ablauf .grid > div']
+      .forEach(function(s){ document.querySelectorAll(s).forEach(function(e){ set.add(e); }); });
+    document.querySelectorAll('h1').forEach(function(h){ if(h.parentElement) set.add(h.parentElement); });
+    var arr=Array.from(set);
+    arr.forEach(function(el){
+      el.classList.add('reveal');
+      var sibs=Array.prototype.slice.call(el.parentElement.children).filter(function(c){return set.has(c);});
+      var i=sibs.indexOf(el);
+      if(i>0) el.style.transitionDelay=Math.min(i*70,350)+'ms';
+    });
+    var io=new IntersectionObserver(function(ents,obs){
+      ents.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); obs.unobserve(e.target); } });
+    },{threshold:.12,rootMargin:'0px 0px -7% 0px'});
+    arr.forEach(function(el){ io.observe(el); });
+    setTimeout(function(){ arr.forEach(function(el){ el.classList.add('in'); }); },3000);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',run); else run();
+})();
+</script>
+</body>
+</html>
