@@ -835,8 +835,23 @@ footer{background-color:rgba(5,7,14,.35);}
 /* scene progress dots -> dark theme + blue->aqua active */
 .dots-ui b{background:rgba(255,255,255,.16);}
 .dots-ui b.on{background:linear-gradient(90deg,#3f6dff,#28d7ee);}
-.pv-arrow{color:rgba(255,255,255,.38);}
-.pv-arrow:hover{color:#6ee9f6;background:rgba(40,215,238,.12);}
+.pv-arrow{color:rgba(255,255,255,.6);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);}
+.pv-arrow:hover{color:#6ee9f6;background:rgba(40,215,238,.14);border-color:rgba(40,215,238,.35);}
+
+/* Tap-Hinweis: pulsierender Ring um das aktive "Weiter"-Ziel in der Preview */
+.scene.active [data-tap="go"]{position:relative;}
+.scene.active [data-tap="go"]::after{
+  content:"";
+  position:absolute; inset:-4px; border-radius:inherit;
+  animation:tapPulse 2.4s ease-out infinite;
+  pointer-events:none;
+}
+@keyframes tapPulse{
+  0%{box-shadow:0 0 0 0 color-mix(in srgb, var(--a) 45%, transparent);}
+  65%{box-shadow:0 0 0 11px color-mix(in srgb, var(--a) 0%, transparent);}
+  100%{box-shadow:0 0 0 0 color-mix(in srgb, var(--a) 0%, transparent);}
+}
+@media (prefers-reduced-motion:reduce){.scene.active [data-tap="go"]::after{animation:none;}}
 
 /* header: gradient hairline instead of flat border */
 header{border-bottom-color:transparent!important;}
